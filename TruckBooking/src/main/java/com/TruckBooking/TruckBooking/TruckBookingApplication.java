@@ -10,7 +10,7 @@ public class TruckBookingApplication {
 		SpringApplication.run(TruckBookingApplication.class, args);
 		System.out.println("trash");
 		System.out.println("trash1");
-                System.out.println("trash3");
+                System.out.println("trash4");
 	}
 
 

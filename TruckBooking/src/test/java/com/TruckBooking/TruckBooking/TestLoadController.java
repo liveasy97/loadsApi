@@ -5,14 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -59,9 +63,10 @@ public class TestLoadController {
 	}
 	
 	@Test
+	@Order(1)
 	public void addLoad() throws Exception {
 		LoadRequest loadrequest = createLoadRequest();
-		Load load = createLoad();
+		Load load = createLoads().get(0);
 		CreateLoadResponse createloadresponse = createLoadResponse();
 		
 		when(loadservice.addLoad(Mockito.any(LoadRequest.class))).thenReturn(createloadresponse);
@@ -75,7 +80,7 @@ public class TestLoadController {
 
 		String outputInJson = response.getContentAsString();
 		
-		System.err.println("++++++++++++++++++++++++++++++++++++1");
+		System.err.println("++++++++++++++++++++++++++++++++++++1addLoad");
 		System.err.println("i " + inputJson);
 		System.err.println("e " + expectedJson);
 		System.err.println("o " + outputInJson);
@@ -88,6 +93,7 @@ public class TestLoadController {
 	
 	// sending loadid using url
 	@Test
+	@Order(2)
 	public void getLoadbyloadid() throws Exception {
 		LoadRequest loadrequest = createLoadRequest();
 		List<Load> loads = createLoads();
@@ -102,7 +108,7 @@ public class TestLoadController {
 		String expectedJson = mapToJson(loads.get(0));
 		String outputInJson = result.getResponse().getContentAsString();
 		
-		System.err.println("++++++++++++++++++++++++++++++++++++2");
+		System.err.println("++++++++++++++++++++++++++++++++++++2getLoadbyloadid");
 		System.err.println("e " + expectedJson);
 		System.err.println("o " + outputInJson);
 		System.err.println("i " + result);
@@ -112,27 +118,95 @@ public class TestLoadController {
 		
 		MockHttpServletResponse response1 = result.getResponse();
 		assertEquals(HttpStatus.OK.value(), response1.getStatus());
-	}	
-	
-	// using params
+	}
+	// using loadingpoint city, suggestedloads = true
 	@Test
-	public void getLoad() throws Exception {
+	@Order(3)
+	public void getLoadbyloadingpointcity1() throws Exception {
 		LoadRequest loadrequest = createLoadRequest();
 		List<Load> loads = createLoads();
-		List<Load> loadsret = Arrays.asList(loads.get(0));
+		Collections.reverse(loads);
 		
 		CreateLoadResponse createloadresponse = createLoadResponse();
 
-		when(loadservice.getLoads(null, null, CommonConstants.ID, null, null)).thenReturn(loadsret);
+		when(loadservice.getLoads(0, "Nagpur", null, null, null, null, true)).thenReturn(loads);
 
-		String URI = "/load?Id=id:1";
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URI).accept(MediaType.APPLICATION_JSON);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/load")
+				.queryParam("loadingPointCity", "Nagpur")
+				.queryParam("pageNo", "0")
+				.queryParam("suggestedLoads", "true")
+				.accept(MediaType.APPLICATION_JSON);
 
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-		String expectedJson = mapToJson(loadsret);
+		String expectedJson = mapToJson(loads);
 		String outputInJson = result.getResponse().getContentAsString();
 		
-		System.err.println("++++++++++++++++++++++++++++++++++++3");
+		System.err.println("++++++++++++++++++++++++++++++++++++2getLoadbyloadingpointcity");
+		System.err.println("e " + expectedJson);
+		System.err.println("o " + outputInJson);
+		System.err.println("i " + result);
+		System.err.println("++++++++++++++++++++++++++++++++++++");
+
+		assertEquals(expectedJson, outputInJson);
+		
+		MockHttpServletResponse response1 = result.getResponse();
+		assertEquals(HttpStatus.OK.value(), response1.getStatus());
+	}
+	
+	// using loadingpoint city, suggestedloads = false
+	@Test
+	@Order(4)
+	public void getLoadbyloadingpointcity2() throws Exception {
+		LoadRequest loadrequest = createLoadRequest();
+		List<Load> loads = createLoads();
+		Collections.reverse(loads);
+		
+		CreateLoadResponse createloadresponse = createLoadResponse();
+
+		when(loadservice.getLoads(0, "Nagpur", null, null, null, null, false)).thenReturn(loads.subList(1, 5));
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/load")
+				.queryParam("loadingPointCity", "Nagpur")
+				.queryParam("pageNo", "0")
+				.queryParam("suggestedLoads", "false")
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expectedJson = mapToJson(loads.subList(1, 5));
+		String outputInJson = result.getResponse().getContentAsString();
+		
+		System.err.println("++++++++++++++++++++++++++++++++++++2getLoadbyloadingpointcity");
+		System.err.println("e " + expectedJson);
+		System.err.println("o " + outputInJson);
+		System.err.println("i " + result);
+		System.err.println("++++++++++++++++++++++++++++++++++++");
+
+		assertEquals(expectedJson, outputInJson);
+		
+		MockHttpServletResponse response1 = result.getResponse();
+		assertEquals(HttpStatus.OK.value(), response1.getStatus());
+	}
+	
+	
+	@Test
+	@Order(5)
+	public void getLoadbyunloadingpointcity() throws Exception {
+		List<Load> loads = createLoads();
+		Collections.reverse(loads);
+
+		when(loadservice.getLoads(0, null, "Raipur", null, null, null, false)).thenReturn(loads);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/load")
+				.queryParam("unloadingPointCity", "Raipur")
+				.queryParam("pageNo", "0")
+				.queryParam("suggestedLoads", "false")
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expectedJson = mapToJson(loads);
+		String outputInJson = result.getResponse().getContentAsString();
+		
+		System.err.println("++++++++++++++++++++++++++++++++++++2getLoadbyloadingpointcity");
 		System.err.println("e " + expectedJson);
 		System.err.println("o " + outputInJson);
 		System.err.println("i " + result);
@@ -145,6 +219,132 @@ public class TestLoadController {
 	}
 	
 	@Test
+	@Order(6)
+	public void getLoadbypostloadid() throws Exception {
+		List<Load> loads = createLoads();
+		Collections.reverse(loads);
+
+		when(loadservice.getLoads(0, null, null, "id:2", null, null, false)).thenReturn(loads.subList(3, 4));
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/load")
+				.queryParam("postLoadId", "id:2")
+				.queryParam("pageNo", "0")
+				.queryParam("suggestedLoads", "false")
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expectedJson = mapToJson(loads.subList(3, 4));
+		String outputInJson = result.getResponse().getContentAsString();
+		
+		System.err.println("++++++++++++++++++++++++++++++++++++getLoadbypostloadid");
+		System.err.println("e " + expectedJson);
+		System.err.println("o " + outputInJson);
+		System.err.println("i " + result);
+		System.err.println("++++++++++++++++++++++++++++++++++++");
+
+		assertEquals(expectedJson, outputInJson);
+		
+		MockHttpServletResponse response1 = result.getResponse();
+		assertEquals(HttpStatus.OK.value(), response1.getStatus());
+	}
+	
+	
+	@Test
+	@Order(7)
+	public void getLoadbytrucktype() throws Exception {
+		List<Load> loads = createLoads();
+		Collections.reverse(loads);
+
+		when(loadservice.getLoads(0, null, null, null,"OPEN_FULL_BODY", null, false)).thenReturn(loads.subList(2, 3));
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/load")
+				.queryParam("truckType", "OPEN_FULL_BODY")
+				.queryParam("pageNo", "0")
+				.queryParam("suggestedLoads", "false")
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expectedJson = mapToJson(loads.subList(2, 3));
+		String outputInJson = result.getResponse().getContentAsString();
+		
+		System.err.println("++++++++++++++++++++++++++++++++++++getLoadbypostloadid");
+		System.err.println("e " + expectedJson);
+		System.err.println("o " + outputInJson);
+		System.err.println("i " + result);
+		System.err.println("++++++++++++++++++++++++++++++++++++");
+
+		assertEquals(expectedJson, outputInJson);
+		
+		MockHttpServletResponse response1 = result.getResponse();
+		assertEquals(HttpStatus.OK.value(), response1.getStatus());
+	}
+	
+	@Test
+	@Order(8)
+	public void getLoadbyloaddate() throws Exception {
+		List<Load> loads = createLoads();
+		Collections.reverse(loads);
+
+		when(loadservice.getLoads(0, null, null, null, null, "01/05/21", false)).thenReturn(loads.subList(2, 5));
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/load")
+				.queryParam("loadDate", "01/05/21")
+				.queryParam("pageNo", "0")
+				.queryParam("suggestedLoads", "false")
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expectedJson = mapToJson(loads.subList(2, 5));
+		String outputInJson = result.getResponse().getContentAsString();
+		
+		System.err.println("++++++++++++++++++++++++++++++++++++getLoadbypostloadid");
+		System.err.println("e " + expectedJson);
+		System.err.println("o " + outputInJson);
+		System.err.println("i " + result);
+		System.err.println("++++++++++++++++++++++++++++++++++++");
+
+		assertEquals(expectedJson, outputInJson);
+		
+		MockHttpServletResponse response1 = result.getResponse();
+		assertEquals(HttpStatus.OK.value(), response1.getStatus());
+	}
+	
+	@Test
+	@Order(9)
+	public void getLoad() throws Exception {
+		
+		LoadRequest loadrequest = createLoadRequest();
+		List<Load> loadsret = createLoads().subList(0, 1);
+
+		when(loadservice.getLoads(0, null, null, "id:1", null, null, false)).thenReturn(loadsret);
+
+		String URI = "/load";
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(URI).queryParam("postLoadId", "id:1")
+				.queryParam("pageNo", "0")
+				.queryParam("suggestedLoads", "false")
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expectedJson = mapToJson(loadsret);
+		String outputInJson = result.getResponse().getContentAsString();
+		
+		System.err.println("++++++++++++++++++++++++++++++++++++3getLoad");
+		System.err.println("e " + expectedJson);
+		System.err.println("o " + outputInJson);
+		System.err.println("i " + result);
+		System.err.println("++++++++++++++++++++++++++++++++++++");
+
+		assertEquals(expectedJson, outputInJson);
+		
+		MockHttpServletResponse response1 = result.getResponse();
+		assertEquals(HttpStatus.OK.value(), response1.getStatus());
+	}
+	
+	
+	//get with paramaters
+	
+	@Test
+	@Order(10)
 	public void updateLoad() throws Exception {
 		LoadRequest loadrequest = createLoadRequest();
 		List<Load> loads = createLoads();
@@ -173,6 +373,7 @@ public class TestLoadController {
 	}
 	
 	@Test
+	@Order(11)
 	public void deleteLoad() throws Exception {
 		DeleteLoadResponse response = new DeleteLoadResponse();
 		response.setStatus(CommonConstants.deleteSuccess);
@@ -193,45 +394,19 @@ public class TestLoadController {
 		assertEquals(HttpStatus.OK.value(), response1.getStatus());
 	}
 	
+	
 	public LoadRequest createLoadRequest()
 	{
-		LoadRequest loadrequest = new LoadRequest();
-		loadrequest.setLoadingPoint("Nagpur");
-		loadrequest.setLoadingPointState("Maharashtra");
-		loadrequest.setLoadingPointCity("Nagpur");
-		loadrequest.setId("id:1");
-		loadrequest.setUnloadingPoint("Raipur");
-		loadrequest.setUnloadingPointState("Chhattisgarh");
-		loadrequest.setUnloadingPointCity("Raipur");
-		loadrequest.setProductType("Gold");
-		loadrequest.setTruckType("OPEN_HALF_BODY");
-		loadrequest.setNoOfTrucks("6");
-		loadrequest.setWeight("100kg");
-		loadrequest.setComment("added comment");
-		loadrequest.setDate("01/01/20");
-		loadrequest.setStatus("Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
 		return loadrequest;
 	}
 	
 	public CreateLoadResponse createLoadResponse()
 	{
-		CreateLoadResponse response = new CreateLoadResponse();
-		response.setLoadId("loadid:1");
-		response.setLoadingPoint("Nagpur");
-		response.setLoadingPointCity("Nagpur");
-		response.setLoadingPointState("Maharashtra");
-		response.setId("id:1");
-		response.setUnloadingPoint("Raipur");
-		response.setUnloadingPointCity("Raipur");
-		response.setUnloadingPointState("Chhattisgarh");
-		response.setProductType("Metal Scrap");
-		response.setTruckType("OPEN_HALF_BODY");
-		response.setNoOfTrucks("4");
-		response.setWeight("10000kg");
-		response.setComment("no comments");
-		response.setStatus("pending");
-		response.setDate("01/01/21");
-		return response;
+		CreateLoadResponse createloadresponse = new CreateLoadResponse("loadid:1", "Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, CreateLoadResponse.UnitValue.PER_TON);
+		return createloadresponse;
 	}
 	
 	public UpdateLoadResponse updateLoadResponse()
@@ -241,82 +416,22 @@ public class TestLoadController {
 		return response;
 	}
 	
-	public Load createLoad()
-	{
-		Load load = new Load();
-		load.setLoadId("loadid:1");
-		load.setLoadingPoint("Nagpur");
-		load.setLoadingPointCity("Nagpur");
-		load.setLoadingPointState("Maharashtra");
-		load.setId("id:1");
-		load.setUnloadingPoint("Raipur");
-		load.setUnloadingPointCity("Raipur");
-		load.setUnloadingPointState("Chhattisgarh");
-		load.setProductType("Metal Scrap");
-		load.setTruckType("OPEN_HALF_BODY");
-		load.setNoOfTrucks("4");
-		load.setWeight("10000kg");
-		load.setComment("no comments");
-		load.setStatus("pending");
-		load.setDate("01/01/21");
-		return load;
-	}
-	
 	public List<Load> createLoads()
 	{
-		Load load1 = new Load();
-		load1.setLoadId("loadid:1");
-		load1.setLoadingPoint("Nagpur");
-		load1.setLoadingPointCity("Nagpur");
-		load1.setLoadingPointState("Maharashtra");
-		load1.setId("id:1");
-		load1.setUnloadingPoint("Raipur");
-		load1.setUnloadingPointCity("Raipur");
-		load1.setUnloadingPointState("Chhattisgarh");
-		load1.setProductType("Metal Scrap");
-		load1.setTruckType("OPEN_HALF_BODY");
-		load1.setNoOfTrucks("4");
-		load1.setWeight("10000kg");
-		load1.setComment("no comments");
-		load1.setStatus("pending");
-		load1.setDate("01/01/21");
-
-		Load load2 = new Load();
-		load2.setLoadId("loadid:2");
-		load2.setLoadingPoint("Nagpur");
-		load2.setLoadingPointCity("Nagpur");
-		load2.setLoadingPointState("Maharashtra");
-		load2.setId("id:2");
-		load2.setUnloadingPoint("Raipur");
-		load2.setUnloadingPointCity("Raipur");
-		load2.setUnloadingPointState("Chhattisgarh");
-		load2.setProductType("Metal Scrap");
-		load2.setTruckType("STANDARD_CONTAINER");
-		load2.setNoOfTrucks("4");
-		load2.setWeight("10000kg");
-		load2.setComment("no comments");
-		load2.setStatus("pending");
-		load2.setDate("02/01/21");
-
-		Load load3 = new Load();
-		load3.setLoadId("loadid:3");
-		load3.setLoadingPoint("Nagpur");
-		load3.setLoadingPointCity("Nagpur");
-		load3.setLoadingPointState("Maharashtra");
-		load3.setId("id:1");
-		load3.setUnloadingPoint("Raipur");
-		load3.setUnloadingPointCity("Raipur");
-		load3.setUnloadingPointState("Chhattisgarh");
-		load3.setProductType("Metal Scrap");
-		load3.setTruckType("OPEN_HALF_BODY");
-		load3.setNoOfTrucks("4");
-		load3.setWeight("10000kg");
-		load3.setComment("no comments");
-		load3.setStatus("pending");
-		load3.setDate("03/01/21");
-		
-        List<Load> loads = Arrays.asList(load1, load2, load3);
+        List<Load> loads = Arrays.asList
+        (	
+        new Load("loadid:1", "Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, Load.UnitValue.PER_TON),
+        new Load("loadid:2", "Nagpur", "Nagpur", "Maharashtra", "id:2", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, Load.UnitValue.PER_TON),
+        new Load("loadid:3", "Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_FULL_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, Load.UnitValue.PER_TON),
+        new Load("loadid:4", "Nagpur", "Nagpur", "Maharashtra", "id:4", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "02/05/21", "added comment", "pending",(long) 100, Load.UnitValue.PER_TON),
+        new Load("loadid:5", "Mumbai", "Mumbai", "Maharashtra", "id:5", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "03/05/21", "added comment", "pending",(long) 100, Load.UnitValue.PER_TON)
+        );
 		return loads;
-	}
+	}	
 
 }

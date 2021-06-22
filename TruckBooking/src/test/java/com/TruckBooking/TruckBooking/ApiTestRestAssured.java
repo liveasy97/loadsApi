@@ -2,6 +2,7 @@ package com.TruckBooking.TruckBooking;
 
 import com.TruckBooking.TruckBooking.Constants.CommonConstants;
 import com.TruckBooking.TruckBooking.Model.LoadRequest;
+import com.TruckBooking.TruckBooking.Response.UpdateLoadResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,28 +22,108 @@ import io.restassured.response.Response;
 @TestMethodOrder(OrderAnnotation.class)
 public class ApiTestRestAssured {
 	
-	static String loadid1;
-	static String loadid2;
-	static String loadid3;
+	private static String loadid1;
+	private static String loadid2;
+	private static String loadid3;
+	
+	private static long loadingpointcitycount = 0;
+	private static long loadingpointcitypagecount = 0;
+	private static long loadingunloadingpointcitycount = 0;
+	private static long loadingunloadingpointcitypagecount = 0;
+	private static long postloadidcount = 0;
+	private static long postloadidpagecount = 0;
+	private static long loaddatecount = 0;
+	private static long loaddatepagecount = 0;
+	private static long trucktypecount = 0;
+	private static long trucktypepagecount = 0;
+	
+	
 	
 	@BeforeAll
 	public static void setup() throws Exception {
+		
 		RestAssured.baseURI = CommonConstants.BASEURI;
 		
-		LoadRequest loadrequest1 = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		Response response11;
+		
+		while (true) {
+			response11 = RestAssured.given().param("pageNo", loadingpointcitypagecount).param("loadingPoint", "Nagpur")
+					.header("accept", "application/json").header("Content-Type", "application/json").get().then()
+					.extract().response();
+
+			loadingpointcitycount += response11.jsonPath().getList("$").size();
+			if (response11.jsonPath().getList("$").size() != CommonConstants.pagesize)
+				break;
+
+			loadingpointcitypagecount++;
+		}
+		
+		Response response22;
+		while (true) {
+			response22 = RestAssured.given().param("pageNo", loadingunloadingpointcitypagecount).param("loadingPoint", "Nagpur")
+					.param("unloadingPoint", "Raipur")
+					.header("accept", "application/json").header("Content-Type", "application/json").get().then()
+					.extract().response();
+
+			loadingunloadingpointcitycount += response22.jsonPath().getList("$").size();
+			if (response22.jsonPath().getList("$").size() != CommonConstants.pagesize)
+				break;
+			loadingunloadingpointcitypagecount++;
+		}
+		
+		Response response33;
+		while (true) {
+			response33 = RestAssured.given().param("pageNo", postloadidpagecount).param("postLoadId", "id:1")
+					.header("accept", "application/json").header("Content-Type", "application/json").get().then()
+					.extract().response();
+
+			postloadidcount += response33.jsonPath().getList("$").size();
+			if (response33.jsonPath().getList("$").size() != CommonConstants.pagesize)
+				break;
+			postloadidpagecount++;
+		}
+		
+		Response response44;
+		while (true) {
+			response44 = RestAssured.given().param("pageNo", loaddatepagecount).param("loadDate", "id:1")
+					.header("accept", "application/json").header("Content-Type", "application/json").get().then()
+					.extract().response();
+
+			loaddatecount += response44.jsonPath().getList("$").size();
+			if (response44.jsonPath().getList("$").size() != CommonConstants.pagesize)
+				break;
+			loaddatepagecount++;
+		}
+		
+		Response response55;
+		while (true) {
+			response55 = RestAssured.given().param("pageNo", trucktypepagecount).param("loadDate", "id:1")
+					.header("accept", "application/json").header("Content-Type", "application/json").get().then()
+					.extract().response();
+
+			trucktypecount += response55.jsonPath().getList("$").size();
+			if (response55.jsonPath().getList("$").size() != CommonConstants.pagesize)
+				break;
+			trucktypepagecount++;
+		}
+		
+		LoadRequest loadrequest1 = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment1", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+		
         String inputJson1 = mapToJson(loadrequest1);
         Response response1 = (Response) RestAssured.given().header("", "").body(inputJson1).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
         
-        LoadRequest loadrequest2 = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "STANDARD_CONTAINER", "6", "100kg", "added comment", "01/02/20", "Done");
+        LoadRequest loadrequest2 = new LoadRequest("Mumbai", "Mumbai", "Maharashtra", "id:1", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_FULL_BODY", "6", "10000kg", "01/05/21", "added comment2", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+		
 		String inputJson2 = mapToJson(loadrequest2);
 		Response response2 = (Response) RestAssured.given().header("", "").body(inputJson2).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
 		
-		LoadRequest loadrequest3 = new LoadRequest("Nagpur", "Maharashtra", "Jaipur", "id:2", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/03/20", "Done");
+		LoadRequest loadrequest3 = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:2", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "03/05/21", "added comment3", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+		
 		String inputJson3 = mapToJson(loadrequest3);
 		Response response3 = (Response) RestAssured.given().header("", "").body(inputJson3).header("accept", "application/json").header("Content-Type", "application/json").post().then().extract().response();
 		
@@ -63,9 +144,7 @@ public class ApiTestRestAssured {
 		System.err.println("o " + response1.jsonPath().getString("id"));
 		System.err.println("o " + response1.jsonPath().getString("status"));
 		System.err.println("++++++++++++++++++++++++++++++++++++");
-		
-		
-		
+
 	}
 	
 	private static String mapToJson(Object object) throws Exception {
@@ -84,8 +163,8 @@ public class ApiTestRestAssured {
 	@Test
 	@Order(3)
 	public void addloadsuccess() throws Exception {
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment4", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -114,8 +193,8 @@ public class ApiTestRestAssured {
 	@Order(4)
 	public void addloadingpointnull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest(null, "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest(null, "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -138,8 +217,9 @@ public class ApiTestRestAssured {
 	@Order(5)
 	public void addloadingpointstatenull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Maharashtra", null, "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", null, "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -161,8 +241,9 @@ public class ApiTestRestAssured {
 	@Order(6)
 	public void addloadingpointcitynull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", null, "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", null, "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -183,8 +264,9 @@ public class ApiTestRestAssured {
 	@Order(7)
 	public void addidnull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", null, "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", null, "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -205,8 +287,9 @@ public class ApiTestRestAssured {
 	@Order(8)
 	public void addloadunloadingpointnull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", null, "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", null, "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -227,8 +310,9 @@ public class ApiTestRestAssured {
 	@Order(9)
 	public void addloadunloadingpointstatenull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", null,
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", null, "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -249,8 +333,9 @@ public class ApiTestRestAssured {
 	@Order(10)
 	public void addloadunloadingpointcitynull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh", null,
-				"Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", null, "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -271,8 +356,9 @@ public class ApiTestRestAssured {
 	@Order(11)
 	public void addloadproducttypenull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh", "Raipur",
-				null, "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", null,
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -293,8 +379,8 @@ public class ApiTestRestAssured {
 	@Order(12)
 	public void addloadtrucktypenull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh", "Raipur",
-				"Gold", null, "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    null, "6", "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -315,8 +401,8 @@ public class ApiTestRestAssured {
 	@Order(13)
 	public void addloadnooftrucknull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh", "Raipur",
-				"Gold", "OPEN_HALF_BODY", null, "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", null, "10000kg", "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -337,8 +423,9 @@ public class ApiTestRestAssured {
 	@Order(14)
 	public void addloadweightnull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh", "Raipur",
-				"Gold", "OPEN_HALF_BODY", "6", null, "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", null, "01/05/21", "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -359,8 +446,9 @@ public class ApiTestRestAssured {
 	@Order(15)
 	public void addloadcommentnull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh", "Raipur",
-				"Gold", "OPEN_HALF_BODY", "6", "100kg", null, "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", null, "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -388,8 +476,9 @@ public class ApiTestRestAssured {
 	@Order(16)
 	public void addloaddatenull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh", "Raipur",
-				"Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", null, "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", null, "added comment", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -410,8 +499,8 @@ public class ApiTestRestAssured {
 	@Order(17)
 	public void addloadstatusnull() throws Exception {
 
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh", "Raipur",
-				"Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", null);
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment00", null,(long) 100, LoadRequest.UnitValue.PER_TON);
 
 		String inputJson = mapToJson(loadrequest);
 
@@ -431,8 +520,6 @@ public class ApiTestRestAssured {
 		System.err.println("o " + response1.statusCode());
 		System.err.println("o " + response1.jsonPath().getString("status"));
 		System.err.println("++++++++++++++++++++++++++++++++++++");
-		
-
 	}
 	
     //////////////////////////////////**getLoad()**////////////////////////
@@ -457,15 +544,34 @@ public class ApiTestRestAssured {
 	@Test
 	@Order(19)
 	public void getloadloadingpointcity() throws Exception {
+		long lastPageCount = loadingpointcitycount % CommonConstants.pagesize;
+		long page = loadingpointcitypagecount;
+
+		if (lastPageCount >= CommonConstants.pagesize - 1)
+			page++;
 		
-		Response response = RestAssured.given().param("loadingPointCity", "Nagpur").header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
+		Response response = RestAssured.given().param("loadingPointCity", "Nagpur")
+				.param("pageNo", page)
+				.header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
 				.response();
 		
 		System.err.println("++++++++++++++++++++++++++++++++++++19");
 		System.err.println("o " + response.statusCode());
 		System.err.println("o " + response.jsonPath().getList("status").size());
 		System.err.println("++++++++++++++++++++++++++++++++++++");
-		assertEquals(2, response.jsonPath().getList("status").size());
+		
+		if(lastPageCount <= CommonConstants.pagesize-2)
+		{
+			assertEquals(lastPageCount+2, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize-1)
+		{
+			assertEquals(1, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize)
+		{
+			assertEquals(2, response.jsonPath().getList("status").size());
+		}
 	}
 	
 	// getload unloadingPointCity
@@ -473,56 +579,126 @@ public class ApiTestRestAssured {
 	@Order(20)
 	public void getloadunloadingPointCity() throws Exception {
 		
-		Response response = RestAssured.given().param("unloadingPointCity", "Raipur").header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
+		long lastPageCount = loadingunloadingpointcitycount% CommonConstants.pagesize;
+		long page = loadingunloadingpointcitypagecount;
+		
+		Response response = RestAssured.given()
+				.param("pageNo", page)
+				.param("loadingPointCity", "Nagpur")
+				.param("unloadingPointCity", "Raipur")
+				.header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
 				.response();
 		
 		System.err.println("++++++++++++++++++++++++++++++++++++20");
 		System.err.println("o " + response.statusCode());
 		System.err.println("o " + response.jsonPath().getList("status").size());
 		System.err.println("++++++++++++++++++++++++++++++++++++");
-		assertEquals(3, response.jsonPath().getList("status").size());
+		
+		if(lastPageCount <= CommonConstants.pagesize-2)
+		{
+			assertEquals(lastPageCount+2, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize-1)
+		{
+			assertEquals(1, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize)
+		{
+			assertEquals(2, response.jsonPath().getList("status").size());
+		}
 	}
 	//getloadshipperId
 	@Test
 	@Order(21)
 	public void getloadloadshipperId() throws Exception {
 		
-		Response response = RestAssured.given().param("Id", "id:1").header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
+		long lastPageCount = postloadidcount% CommonConstants.pagesize;
+		long page = postloadidpagecount;
+		
+		Response response = RestAssured.given()
+				.param("pageNo", page)
+				.param("postLoadId", "id:1")
+				.header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
 				.response();
 		
 		System.err.println("++++++++++++++++++++++++++++++++++++21");
 		System.err.println("o " + response.statusCode());
 		System.err.println("o " + response.jsonPath().getList("status").size());
 		System.err.println("++++++++++++++++++++++++++++++++++++");
-		assertEquals(2, response.jsonPath().getList("status").size());
+		
+		if(lastPageCount <= CommonConstants.pagesize-2)
+		{
+			assertEquals(lastPageCount+2, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize-1)
+		{
+			assertEquals(1, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize)
+		{
+			assertEquals(2, response.jsonPath().getList("status").size());
+		}
 	}
+	
 	//getloadtruckType
 	@Test
 	@Order(22)
 	public void getloadtruckType() throws Exception {
 		
-		Response response = RestAssured.given().param("truckType", "OPEN_HALF_BODY").header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
+		long lastPageCount = trucktypecount%CommonConstants.pagesize;
+		long page = trucktypepagecount;
+		
+		Response response = RestAssured.given()
+				.param("pageNo", page)
+				.param("truckType", "OPEN_HALF_BODY")
+				.header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
 				.response();
 		
 		System.err.println("++++++++++++++++++++++++++++++++++++22");
 		System.err.println("o " + response.statusCode());
 		System.err.println("o " + response.jsonPath().getList("status").size());
 		System.err.println("++++++++++++++++++++++++++++++++++++");
-		assertEquals(2, response.jsonPath().getList("status").size());
+		
+		if(lastPageCount <= CommonConstants.pagesize-2)
+		{
+			assertEquals(lastPageCount+2, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize-1)
+		{
+			assertEquals(1, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize)
+		{
+			assertEquals(2, response.jsonPath().getList("status").size());
+		}
 	}
 	//getload date
 	@Test
 	@Order(23)
 	public void getloaddate() throws Exception {
 		
-		Response response = RestAssured.given().param("date", "01/03/20").header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
+		long lastPageCount = loaddatecount%CommonConstants.pagesize;
+		long page = loaddatepagecount;
+		
+		Response response = RestAssured.given()
+				.param("pageNo", page)
+				.param("loadDate", "03/05/21")
+				.header("accept", "application/json").header("Content-Type", "application/json").get().then().extract()
 				.response();
 		
 		System.err.println("++++++++++++++++++++++++++++++++++++23");
 		System.err.println("o " + response.statusCode());
 		System.err.println("o " + response.jsonPath().getList("status").size());
 		System.err.println("++++++++++++++++++++++++++++++++++++");
-		assertEquals(1, response.jsonPath().getList("status").size());
+		
+		if(lastPageCount <= CommonConstants.pagesize-1)
+		{
+			assertEquals(lastPageCount + 1, response.jsonPath().getList("status").size());
+		}
+		else if(lastPageCount == CommonConstants.pagesize)
+		{
+			assertEquals(1, response.jsonPath().getList("status").size());
+		}
 	}
 	
 	//getload loadid
@@ -530,7 +706,7 @@ public class ApiTestRestAssured {
 	@Order(24)
 	public void getloadloadid() throws Exception {
 		
-		Response response = RestAssured.given().param().header("accept", "application/json").header("Content-Type", "application/json").get("/"+loadid1).then().extract()
+		Response response = RestAssured.given().param("","").header("accept", "application/json").header("Content-Type", "application/json").get("/"+loadid1).then().extract()
 				.response();
 		
 		String loadid = response.jsonPath().getString("loadId");
@@ -540,14 +716,14 @@ public class ApiTestRestAssured {
 		System.err.println("++++++++++++++++++++++++++++++++++++");
 		assertEquals("Nagpur", response.jsonPath().getString("loadingPointCity"));
 		assertEquals("Maharashtra", response.jsonPath().getString("loadingPointState"));
-		assertEquals("id:1", response.jsonPath().getString("id"));
+		assertEquals("id:1", response.jsonPath().getString("postLoadId"));
 		assertEquals("Raipur", response.jsonPath().getString("unloadingPointCity"));
 		assertEquals("Chhattisgarh", response.jsonPath().getString("unloadingPointState"));
 		assertEquals("Gold", response.jsonPath().getString("productType"));
 		assertEquals("OPEN_HALF_BODY", response.jsonPath().getString("truckType"));
 		assertEquals("6", response.jsonPath().getString("noOfTrucks"));
-		assertEquals("100kg", response.jsonPath().getString("weight"));
-		assertEquals("01/01/20", response.jsonPath().getString("date"));
+		assertEquals("10000kg", response.jsonPath().getString("weight"));
+		assertEquals("01/05/21", response.jsonPath().getString("loadDate"));
 	}
 	
 //////////////////////////////////**updateLoad()**////////////////////////
@@ -557,8 +733,9 @@ public class ApiTestRestAssured {
 	public void updateData() throws Exception {
 
 		//adding load
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment6", "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
         String inputJson = mapToJson(loadrequest);
         Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
@@ -566,8 +743,9 @@ public class ApiTestRestAssured {
 		String loadid = response.jsonPath().getString("loadId");
 		
 		//update request
-		LoadRequest loadrequestupdate = new LoadRequest("Surat", "Gujarat", "Surat", "id:4", "Patna", "Bihar",
-				"Patna", "Silver", "OPEN_HALF_BODY", "60", "1000kg", "added comment", "01/05/20", "Done");
+		LoadRequest loadrequestupdate = new LoadRequest("Surat", "Surat", "Gujarat", "id:4", "Patna", "Patna",
+				"Bihar", "Silver", "OPEN_HALF_BODY", "60", "1000kg", "01/05/20", 
+				"added comment", "Done", (long)1000, LoadRequest.UnitValue.PER_TON);
 
 		String inputJsonupdate = mapToJson(loadrequestupdate);
 
@@ -576,29 +754,33 @@ public class ApiTestRestAssured {
 
 		assertEquals(200, responseupdate.statusCode());
 		assertEquals(CommonConstants.updateSuccess, responseupdate.jsonPath().getString("status"));
-		assertEquals(CommonConstants.updateSuccess, responseupdate.jsonPath().getString("status"));
 		
 		System.err.println("++++++++++++++++++++++++++++++++++++25");
 		System.err.println("o " + responseupdate.jsonPath().getString("status"));
 		System.err.println("++++++++++++++++++++++++++++++++++++");
 		
-		Response response1 = RestAssured.given().param("date", "01/03/20").header("accept", "application/json").header("Content-Type", "application/json").get("/"+loadid).then().extract()
+		Response response1 = RestAssured.given().header("accept", "application/json").header("Content-Type", "application/json").get("/"+loadid).then().extract()
 				.response();
 		
 		System.err.println("++++++++++++++++++++++++++++++++++++24");
 		System.err.println("o " + response1.statusCode());
 		System.err.println("o " + response1.jsonPath().getString("status"));
 		System.err.println("++++++++++++++++++++++++++++++++++++");
+		
 		assertEquals("Surat", response1.jsonPath().getString("loadingPointCity"));
 		assertEquals("Gujarat", response1.jsonPath().getString("loadingPointState"));
-		assertEquals("id:4", response1.jsonPath().getString("id"));
+		assertEquals("id:4", response1.jsonPath().getString("postLoadId"));
 		assertEquals("Patna", response1.jsonPath().getString("unloadingPointCity"));
+		
 		assertEquals("Bihar", response1.jsonPath().getString("unloadingPointState"));
 		assertEquals("Silver", response1.jsonPath().getString("productType"));
+		
 		assertEquals("OPEN_HALF_BODY", response1.jsonPath().getString("truckType"));
 		assertEquals("60", response1.jsonPath().getString("noOfTrucks"));
 		assertEquals("1000kg", response1.jsonPath().getString("weight"));
-		assertEquals("01/05/20", response1.jsonPath().getString("date"));
+		assertEquals("01/05/20", response1.jsonPath().getString("loadDate"));
+		assertEquals("1000", response1.jsonPath().getString("rate"));
+		assertEquals("PER_TON", response1.jsonPath().getString("unitValue"));
 		
 		Response responsedel = RestAssured.given().header("", "").delete("/" + loadid).then().extract().response();
 		assertEquals(200, responsedel.statusCode());
@@ -607,12 +789,13 @@ public class ApiTestRestAssured {
 	
 	// all null
 	@Test
-	@Order(25)
 	public void updateData1() throws Exception {
 
 		//adding load
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "1000kg", "01/05/21", "added comment7",
+        	    "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+
         String inputJson = mapToJson(loadrequest);
         Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
@@ -620,54 +803,63 @@ public class ApiTestRestAssured {
 		String loadid = response.jsonPath().getString("loadId");
 		
 		//update request
-		LoadRequest loadrequestupdate = new LoadRequest(null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+		LoadRequest loadrequestupdate = new LoadRequest(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 
 		String inputJsonupdate = mapToJson(loadrequestupdate);
 
 		Response responseupdate = RestAssured.given().header("", "").body(inputJsonupdate).header("accept", "application/json")
 				.header("Content-Type", "application/json").put("/" + loadid).then().extract().response();
-
+		
+		System.err.println("++++++++++++++++++++++++++++++++++++24 updateData1");
+		System.err.println("o " + responseupdate.jsonPath().getString("loadingPointCity"));
+		System.err.println("o " + responseupdate.jsonPath().getString("loadingPointState"));
+		System.err.println("o " + responseupdate.jsonPath().getString("postLoadId"));
+		System.err.println("o " + responseupdate.jsonPath().getString("unloadingPointCity"));
+		System.err.println("o " + responseupdate.jsonPath().getString("unloadingPointState"));
+		System.err.println("o " + responseupdate.jsonPath().getString("productType"));
+		System.err.println("o " + responseupdate.jsonPath().getString("truckType"));
+		System.err.println("o " + responseupdate.jsonPath().getString("noOfTrucks"));
+		System.err.println("o " + responseupdate.jsonPath().getString("weight"));
+		System.err.println("o " + responseupdate.jsonPath().getString("rate"));
+		System.err.println("o " + responseupdate.jsonPath().getString("loadDate"));
+		System.err.println("o " + responseupdate.statusCode());
+		System.err.println("o " + responseupdate.jsonPath().getString("status"));
+		System.err.println("o " + responseupdate.jsonPath().getString("loadId"));
+		System.err.println("o " + loadid);
+		System.err.println("++++++++++++++++++++++++++++++++++++");
+		
 		assertEquals(200, responseupdate.statusCode());
 		assertEquals(CommonConstants.updateSuccess, responseupdate.jsonPath().getString("status"));
-		assertEquals(CommonConstants.updateSuccess, responseupdate.jsonPath().getString("status"));
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++25");
-		System.err.println("o " + responseupdate.jsonPath().getString("status"));
-		System.err.println("++++++++++++++++++++++++++++++++++++");
-		
-		Response response1 = RestAssured.given().param("date", "01/03/20").header("accept", "application/json").header("Content-Type", "application/json").get("/"+loadid).then().extract()
-				.response();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++24");
-		System.err.println("o " + response1.statusCode());
-		System.err.println("o " + response1.jsonPath().getString("status"));
-		System.err.println("++++++++++++++++++++++++++++++++++++");
-		assertEquals("Nagpur", response1.jsonPath().getString("loadingPointCity"));
-		assertEquals("Maharashtra", response1.jsonPath().getString("loadingPointState"));
-		assertEquals("id:1", response1.jsonPath().getString("id"));
-		assertEquals("Raipur", response1.jsonPath().getString("unloadingPointCity"));
-		assertEquals("Chhattisgarh", response1.jsonPath().getString("unloadingPointState"));
-		assertEquals("Gold", response1.jsonPath().getString("productType"));
-		assertEquals("OPEN_HALF_BODY", response1.jsonPath().getString("truckType"));
-		assertEquals("6", response1.jsonPath().getString("noOfTrucks"));
-		assertEquals("100kg", response1.jsonPath().getString("weight"));
-		assertEquals("01/01/20", response1.jsonPath().getString("date"));
+		assertEquals("Nagpur", responseupdate.jsonPath().getString("loadingPointCity"));
+		assertEquals("Maharashtra", responseupdate.jsonPath().getString("loadingPointState"));
+		assertEquals("id:3", responseupdate.jsonPath().getString("postLoadId"));
+		assertEquals("Raipur", responseupdate.jsonPath().getString("unloadingPointCity"));
+		assertEquals("Chhattisgarh", responseupdate.jsonPath().getString("unloadingPointState"));
+		assertEquals("Gold", responseupdate.jsonPath().getString("productType"));
+		assertEquals("OPEN_HALF_BODY", responseupdate.jsonPath().getString("truckType"));
+		assertEquals("6", responseupdate.jsonPath().getString("noOfTrucks"));
+		assertEquals("1000kg", responseupdate.jsonPath().getString("weight"));
+		assertEquals("01/05/21", responseupdate.jsonPath().getString("loadDate"));
+		assertEquals("100", responseupdate.jsonPath().getString("rate"));
+		assertEquals("PER_TON", responseupdate.jsonPath().getString("unitValue"));
 		
 		Response responsedel = RestAssured.given().header("", "").delete("/" + loadid).then().extract().response();
+		
 		assertEquals(200, responsedel.statusCode());
 		assertEquals(CommonConstants.deleteSuccess, responsedel.jsonPath().getString("status"));
 	}
 	
 	
 	
-	// loading point city empty
+	// loading point empty
 	@Test
 	@Order(25)
 	public void updateData2() throws Exception {
 
 		//adding load
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment8",
+        	    "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
         String inputJson = mapToJson(loadrequest);
         Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
@@ -675,7 +867,7 @@ public class ApiTestRestAssured {
 		String loadid = response.jsonPath().getString("loadId");
 		
 		//update request
-		LoadRequest loadrequestupdate = new LoadRequest( "",null,null,null,null,null,null,null,null,null,null,null,null,null);
+		LoadRequest loadrequestupdate = new LoadRequest("",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 
 		String inputJsonupdate = mapToJson(loadrequestupdate);
 
@@ -700,8 +892,9 @@ public class ApiTestRestAssured {
 	public void updateData3() throws Exception {
 
 		//adding load
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment9",
+        	    "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
         String inputJson = mapToJson(loadrequest);
         Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
@@ -709,7 +902,7 @@ public class ApiTestRestAssured {
 		String loadid = response.jsonPath().getString("loadId");
 		
 		//update request
-		LoadRequest loadrequestupdate = new LoadRequest( null,"",null,null,null,null,null,null,null,null,null,null,null,null);
+		LoadRequest loadrequestupdate = new LoadRequest( null,null,"",null,null,null,null,null,null,null,null,null,null,null,null,null);
 
 		String inputJsonupdate = mapToJson(loadrequestupdate);
 
@@ -728,14 +921,15 @@ public class ApiTestRestAssured {
 		assertEquals(CommonConstants.deleteSuccess, responsedel.jsonPath().getString("status"));
 		
 	}
-	//loading city empty
+	//loading point city empty
 	@Test
 	@Order(25)
 	public void updateData4() throws Exception {
 
 		//adding load
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment11",
+        	    "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
         String inputJson = mapToJson(loadrequest);
         Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
@@ -743,7 +937,7 @@ public class ApiTestRestAssured {
 		String loadid = response.jsonPath().getString("loadId");
 		
 		//update request
-		LoadRequest loadrequestupdate = new LoadRequest( null,null,"",null,null,null,null,null,null,null,null,null,null,null);
+		LoadRequest loadrequestupdate = new LoadRequest(null,"",null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 
 		String inputJsonupdate = mapToJson(loadrequestupdate);
 
@@ -768,8 +962,9 @@ public class ApiTestRestAssured {
 	public void updateData5() throws Exception {
 
 		//adding load
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment22",
+        	    "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
         String inputJson = mapToJson(loadrequest);
         Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
@@ -777,7 +972,7 @@ public class ApiTestRestAssured {
 		String loadid = response.jsonPath().getString("loadId");
 		
 		//update request
-		LoadRequest loadrequestupdate = new LoadRequest( null,null,null,null,"",null,null,null,null,null,null,null,null,null);
+		LoadRequest loadrequestupdate = new LoadRequest( null,null,null,null,"",null,null,null,null,null,null,null,null,null,null,null);
 
 		String inputJsonupdate = mapToJson(loadrequestupdate);
 
@@ -803,8 +998,9 @@ public class ApiTestRestAssured {
 	public void updateData6() throws Exception {
 
 		//adding load
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment33",
+        	    "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
         String inputJson = mapToJson(loadrequest);
         Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
@@ -812,7 +1008,7 @@ public class ApiTestRestAssured {
 		String loadid = response.jsonPath().getString("loadId");
 		
 		//update request
-		LoadRequest loadrequestupdate = new LoadRequest( null,null,null,null,null,"",null,null,null,null,null,null,null,null);
+		LoadRequest loadrequestupdate = new LoadRequest( null,null,null,null,null,null,"",null,null,null,null,null,null,null,null,null);
 
 		String inputJsonupdate = mapToJson(loadrequestupdate);
 
@@ -837,8 +1033,9 @@ public class ApiTestRestAssured {
 	public void updateData7() throws Exception {
 
 		//adding load
-		LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-				"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment44",
+        	    "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
         String inputJson = mapToJson(loadrequest);
         Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
 				.header("Content-Type", "application/json").post().then().extract().response();
@@ -846,7 +1043,7 @@ public class ApiTestRestAssured {
 		String loadid = response.jsonPath().getString("loadId");
 		
 		//update request
-		LoadRequest loadrequestupdate = new LoadRequest( null,null,null,null,null,null,"",null,null,null,null,null,null,null);
+		LoadRequest loadrequestupdate = new LoadRequest( null,null,null,null,null,"",null,null,null,null,null,null,null,null,null,null);
 
 		String inputJsonupdate = mapToJson(loadrequestupdate);
 
@@ -865,38 +1062,39 @@ public class ApiTestRestAssured {
 		assertEquals(CommonConstants.deleteSuccess, responsedel.jsonPath().getString("status"));
 	}
 	//empty id
-		@Test
-		@Order(25)
-		public void updateData8() throws Exception {
+	@Test
+	@Order(25)
+	public void updateData8() throws Exception {
 
-			//adding load
-			LoadRequest loadrequest = new LoadRequest("Nagpur", "Maharashtra", "Nagpur", "id:1", "Raipur", "Chhattisgarh",
-					"Raipur", "Gold", "OPEN_HALF_BODY", "6", "100kg", "added comment", "01/01/20", "Done");
-	        String inputJson = mapToJson(loadrequest);
-	        Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
-					.header("Content-Type", "application/json").post().then().extract().response();
-	        
-			String loadid = response.jsonPath().getString("loadId");
-			
-			//update request
-			LoadRequest loadrequestupdate = new LoadRequest( null,null,null,"",null,null,null,null,null,null,null,null,null,null);
+		//adding load
+		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:3", "Raipur", "Raipur", "Chhattisgarh", "Gold",
+        	    "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment55",
+        	    "pending",(long) 100, LoadRequest.UnitValue.PER_TON);
+        String inputJson = mapToJson(loadrequest);
+        Response response = (Response) RestAssured.given().header("", "").body(inputJson).header("accept", "application/json")
+				.header("Content-Type", "application/json").post().then().extract().response();
+        
+		String loadid = response.jsonPath().getString("loadId");
+		
+		//update request
+		LoadRequest loadrequestupdate = new LoadRequest( null,null,null,"",null,null,null,null,null,null,null,null,null,null,null,null);
 
-			String inputJsonupdate = mapToJson(loadrequestupdate);
+		String inputJsonupdate = mapToJson(loadrequestupdate);
 
-			Response responseupdate = RestAssured.given().header("", "").body(inputJsonupdate).header("accept", "application/json")
-					.header("Content-Type", "application/json").put("/" + loadid).then().extract().response();
+		Response responseupdate = RestAssured.given().header("", "").body(inputJsonupdate).header("accept", "application/json")
+				.header("Content-Type", "application/json").put("/" + loadid).then().extract().response();
 
-			assertEquals(200, responseupdate.statusCode());
-			assertEquals(CommonConstants.emptyshiperid, responseupdate.jsonPath().getString("status"));
-			
-			System.err.println("++++++++++++++++++++++++++++++++++++25");
-			System.err.println("o " + responseupdate.jsonPath().getString("status"));
-			System.err.println("++++++++++++++++++++++++++++++++++++");
-			
-			Response responsedel = RestAssured.given().header("", "").delete("/" + loadid).then().extract().response();
-			assertEquals(200, responsedel.statusCode());
-			assertEquals(CommonConstants.deleteSuccess, responsedel.jsonPath().getString("status"));
-		}
+		assertEquals(200, responseupdate.statusCode());
+		assertEquals(CommonConstants.emptyshiperid, responseupdate.jsonPath().getString("status"));
+		
+		System.err.println("++++++++++++++++++++++++++++++++++++25");
+		System.err.println("o " + responseupdate.jsonPath().getString("status"));
+		System.err.println("++++++++++++++++++++++++++++++++++++");
+		
+		Response responsedel = RestAssured.given().header("", "").delete("/" + loadid).then().extract().response();
+		assertEquals(200, responsedel.statusCode());
+		assertEquals(CommonConstants.deleteSuccess, responsedel.jsonPath().getString("status"));
+	}
 	
 	
 	@Test

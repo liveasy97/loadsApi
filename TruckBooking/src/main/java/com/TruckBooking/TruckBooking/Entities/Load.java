@@ -6,11 +6,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="load")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Load {
 	@Id
 	private String loadId;
@@ -26,9 +31,9 @@ public class Load {
 	private String truckType;
 	private String noOfTrucks;
 	private String weight; 
+	private String loadDate;
 	private String comment; //this should be an optional
 	private String status;
-	private String loadDate;
 	private Long rate;  //optional
 	
 	@Enumerated(EnumType.STRING)
@@ -37,8 +42,6 @@ public class Load {
 	public enum UnitValue{
 		PER_TON, PER_TRUCK
 	}
-	
-
 	
 }
 

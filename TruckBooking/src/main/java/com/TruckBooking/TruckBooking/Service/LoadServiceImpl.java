@@ -233,7 +233,7 @@ public class LoadServiceImpl implements LoadService {
 		return createloadResponse;
 	}
 	
-	@Override
+	@Override 
 	public List<Load> getLoads(Integer pageNo, String loadingPointCity, String unloadingPointCity,
 			String postLoadId, String truckType, String loadDate, boolean suggestedLoads) {
 		
@@ -245,7 +245,6 @@ public class LoadServiceImpl implements LoadService {
 		
 		if(suggestedLoads==true)
 		{
-			System.err.println("suggested load working");
 			List<Load> load = loadDao.findByAll(currentPage);
 			Collections.reverse(load);
 			return load;
@@ -305,6 +304,7 @@ public class LoadServiceImpl implements LoadService {
 
 	@Override
 	public UpdateLoadResponse updateLoad(String loadId, LoadRequest updateLoad) {
+		System.err.println("ye call hua hai");
 		UpdateLoadResponse updateloadResponse = new UpdateLoadResponse();
 		Load load = new Load();
 		

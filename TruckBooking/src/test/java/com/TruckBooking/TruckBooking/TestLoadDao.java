@@ -2,10 +2,11 @@ package com.TruckBooking.TruckBooking;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.TruckBooking.TruckBooking.Constants.CommonConstants;
 import com.TruckBooking.TruckBooking.Dao.LoadDao;
 import com.TruckBooking.TruckBooking.Entities.Load;
+import com.TruckBooking.TruckBooking.Entities.Load.UnitValue;
 
 
 @DataJpaTest
@@ -27,12 +29,6 @@ public class TestLoadDao {
 	
 	@Autowired
 	private LoadDao loadDao;
-	/*
-	@Test
-	public void testing()
-	{
-		System.out.println("its working");
-	}*/
 	
 	@Test
 	public void testFindbyLoadId()
@@ -46,7 +42,7 @@ public class TestLoadDao {
 	}
 	
 	@Test
-	public void findByid()
+	public void findBypostloadid()
 	{
 		List<Load> loads = createLoads();
 		Load savedindb1 = entityManager.persist(loads.get(0));
@@ -54,7 +50,7 @@ public class TestLoadDao {
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
 		Pageable currentPage = (Pageable) PageRequest.of(0, CommonConstants.pagesize);
-		Iterable<Load> allLoads = loadDao.findByid("id:1", currentPage);
+		Iterable<Load> allLoads = loadDao.findByPostLoadId("id:1", currentPage);
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
@@ -74,7 +70,10 @@ public class TestLoadDao {
 		Load savedindb2 = entityManager.persist(loads.get(1));
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
-		Iterable<Load> allLoads = loadDao.findByLoadAndUnloadPoint("Nagpur", "Raipur");
+		Pageable currentPage;
+		currentPage = PageRequest.of(0, CommonConstants.pagesize);
+		
+		Iterable<Load> allLoads = loadDao.findByLoadingPointCityAndUnloadingPointCity("Nagpur", "Raipur", currentPage);
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
@@ -95,7 +94,10 @@ public class TestLoadDao {
 		Load savedindb2 = entityManager.persist(loads.get(1));
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
-		Iterable<Load> allLoads = loadDao.findByTruckType("OPEN_HALF_BODY");
+		Pageable currentPage;
+		currentPage = PageRequest.of(0, CommonConstants.pagesize);
+		
+		Iterable<Load> allLoads = loadDao.findByTruckType("OPEN_HALF_BODY", currentPage);
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
@@ -108,14 +110,32 @@ public class TestLoadDao {
 	}
 	
 	@Test
-	public void findByDate()
+	public void findbyloadid()
 	{
 		List<Load> loads = createLoads();
 		Load savedindb1 = entityManager.persist(loads.get(0));
 		Load savedindb2 = entityManager.persist(loads.get(1));
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
-		Iterable<Load> allLoads = loadDao.findByDate("22/01/21");
+		Optional<Load> load = loadDao.findByLoadId("loadid:2");
+		
+		System.err.println("a: " + loads);
+		System.err.println("b: " + loads.get(1));
+		assertThat(loads.get(1)).isEqualTo(load.get());
+	}
+	
+	@Test
+	public void findByLoadDate()
+	{
+		List<Load> loads = createLoads();
+		Load savedindb1 = entityManager.persist(loads.get(0));
+		Load savedindb2 = entityManager.persist(loads.get(1));
+		Load savedindb3 = entityManager.persist(loads.get(2));
+		
+		Pageable currentPage;
+		currentPage = PageRequest.of(0, 5);
+		
+		Iterable<Load> allLoads = loadDao.findByLoadDate("22/01/21", currentPage);
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
@@ -136,7 +156,10 @@ public class TestLoadDao {
 		Load savedindb2 = entityManager.persist(loads.get(1));
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
-		Iterable<Load> allLoads = loadDao.findByLoadingPointCity("Nagpur");
+		Pageable currentPage;
+		currentPage = PageRequest.of(0, 5);
+		
+		Iterable<Load> allLoads = loadDao.findByLoadingPointCity("Nagpur", currentPage);
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
@@ -157,7 +180,10 @@ public class TestLoadDao {
 		Load savedindb2 = entityManager.persist(loads.get(1));
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
-		Iterable<Load> allLoads = loadDao.findByLoadingPointState("Maharashtra");
+		Pageable currentPage;
+		currentPage = PageRequest.of(0, 5);
+		
+		Iterable<Load> allLoads = loadDao.findByLoadingPointState("Maharashtra", currentPage);
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
@@ -178,7 +204,10 @@ public class TestLoadDao {
 		Load savedindb2 = entityManager.persist(loads.get(1));
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
-		Iterable<Load> allLoads = loadDao.findByUnloadingPointCity("Raipur");
+		Pageable currentPage;
+		currentPage = PageRequest.of(0, 5);
+		
+		Iterable<Load> allLoads = loadDao.findByUnloadingPointCity("Raipur", currentPage);
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
@@ -199,7 +228,10 @@ public class TestLoadDao {
 		Load savedindb2 = entityManager.persist(loads.get(1));
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
-		Iterable<Load> allLoads = loadDao.findByUnloadingPointState("Chhattisgarh");
+		Pageable currentPage;
+		currentPage = PageRequest.of(0, 5);
+		
+		Iterable<Load> allLoads = loadDao.findByUnloadingPointState("Chhattisgarh", currentPage);
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
@@ -257,7 +289,7 @@ public class TestLoadDao {
 		load.setLoadingPoint("Nagpur");
 		load.setLoadingPointCity("Nagpur");
 		load.setLoadingPointState("Maharashtra");
-		load.setId("id:1");
+		load.setPostLoadId("id:1");
 		load.setUnloadingPoint("Raipur");
 		load.setUnloadingPointCity("Raipur");
 		load.setUnloadingPointState("Chhattisgarh");
@@ -267,7 +299,9 @@ public class TestLoadDao {
 		load.setWeight("10000kg");
 		load.setComment("no comments");
 		load.setStatus("pending");
-		load.setDate("01/01/21");
+		load.setLoadDate("01/01/21");
+		load.setRate((long) 505500);
+		load.setUnitValue(UnitValue.PER_TON);
 		return load;
 	}
 	public List<Load> createLoads()
@@ -281,7 +315,7 @@ public class TestLoadDao {
 		load1.setLoadingPoint("Nagpur");
 		load1.setLoadingPointCity("Nagpur");
 		load1.setLoadingPointState("Maharashtra");
-		load1.setId("id:1");
+		load1.setPostLoadId("id:1");
 		load1.setUnloadingPoint("Raipur");
 		load1.setUnloadingPointCity("Raipur");
 		load1.setUnloadingPointState("Chhattisgarh");
@@ -291,13 +325,16 @@ public class TestLoadDao {
 		load1.setWeight("10000kg");
 		load1.setComment("no comments");
 		load1.setStatus("pending");
-		load1.setDate("22/01/21");
+		load1.setLoadDate("22/01/21");
+		load1.setRate((long) 505500);
+		load1.setUnitValue(UnitValue.PER_TON);
+		
 		
 		load2.setLoadId("loadid:2");
 		load2.setLoadingPoint("Nagpur");
 		load2.setLoadingPointCity("Nagpur");
 		load2.setLoadingPointState("Maharashtra");
-		load2.setId("id:1");
+		load2.setPostLoadId("id:1");
 		load2.setUnloadingPoint("Raipur");
 		load2.setUnloadingPointCity("Raipur");
 		load2.setUnloadingPointState("Chhattisgarh");
@@ -307,13 +344,15 @@ public class TestLoadDao {
 		load2.setWeight("10000kg");
 		load2.setComment("no comments");
 		load2.setStatus("pending");
-		load2.setDate("01/01/21");
+		load2.setLoadDate("01/01/21");
+		load2.setRate((long) 505500);
+		load2.setUnitValue(UnitValue.PER_TON);
 		
 		load3.setLoadId("loadid:3");
 		load3.setLoadingPoint("Nagpur");
 		load3.setLoadingPointCity("Nagpur");
 		load3.setLoadingPointState("Maharashtra");
-		load3.setId("id:2");
+		load3.setPostLoadId("id:2");
 		load3.setUnloadingPoint("Raipur");
 		load3.setUnloadingPointCity("Raipur");
 		load3.setUnloadingPointState("Chhattisgarh");
@@ -323,7 +362,9 @@ public class TestLoadDao {
 		load3.setWeight("10000kg");
 		load3.setComment("no comments");
 		load3.setStatus("pending");
-		load3.setDate("01/01/21");
+		load3.setLoadDate("01/01/21");
+		load3.setRate((long) 505500);
+		load3.setUnitValue(UnitValue.PER_TON);
 		List<Load> loads = Arrays.asList(load1, load2, load3);
 		
 		return loads;

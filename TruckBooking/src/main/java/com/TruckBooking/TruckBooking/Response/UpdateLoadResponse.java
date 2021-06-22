@@ -3,13 +3,17 @@ package com.TruckBooking.TruckBooking.Response;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+import com.TruckBooking.TruckBooking.Entities.Load.UnitValue;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateLoadResponse {
 	
-	private String status;
 	private String loadId;
 	private String loadingPoint;
 	private String loadingPointCity;
@@ -22,12 +26,13 @@ public class UpdateLoadResponse {
 	private String truckType;
 	private String noOfTrucks;
 	private String weight; 
-	private String comment; //this should be an optional
 	private String loadDate;
-	private Long rate;
+	private String comment; //this should be an optional
+	private String status;
+	private Long rate;  //optional
 	
 	@Enumerated(EnumType.STRING)
-	private UnitValue unitValue;
+	private UnitValue unitValue;    //optional
 
 	public enum UnitValue{
 		PER_TON, PER_TRUCK

@@ -278,7 +278,7 @@ public class TestLoadService {
 	// comment null
 	@Test
 	@Order(14)
-	public void addLoadfail13() {
+	public void addLoadnullcomment() {
 		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur",
 				"Chhattisgarh", "Gold", "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", null, "pending", (long) 100,
 				LoadRequest.UnitValue.PER_TON);
@@ -297,7 +297,7 @@ public class TestLoadService {
 	// status null
 	@Test
 	@Order(15)
-	public void addLoadfail14() {
+	public void addLoadnullstatus() {
 		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur",
 				"Chhattisgarh", "Gold", "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "comment", null, (long) 100,
 				LoadRequest.UnitValue.PER_TON);
@@ -316,7 +316,7 @@ public class TestLoadService {
 	// rate null
 	@Test
 	@Order(16)
-	public void addLoadfail15() {
+	public void addLoadnullrate() {
 		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur",
 				"Chhattisgarh", "Gold", "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "comment", "pending", null,
 				LoadRequest.UnitValue.PER_TON);
@@ -335,7 +335,7 @@ public class TestLoadService {
 	// unit value null
 	@Test
 	@Order(17)
-	public void addLoadfail16() {
+	public void addLoadnullunitvalue() {
 		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur",
 				"Chhattisgarh", "Gold", "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "comment", "pending", (long) 100,
 				null);
@@ -475,7 +475,7 @@ public class TestLoadService {
 		UpdateLoadResponse updateloadresponse = new UpdateLoadResponse(null, null, null, null, null, null, null, null,
 				null, null, null, null, null, null, CommonConstants.AccountNotFoundError, null, null);
 
-		UpdateLoadResponse result = loadservice.updateLoad("load:862064c2-f58c-4758-986c-095cd6c2091b", loadrequest);
+		UpdateLoadResponse result = loadservice.updateLoad("loadd:862064c2-f58c-4758-986c-095cd6c2091", loadrequest);
 
 		assertEquals(updateloadresponse, result);
 	}
@@ -487,7 +487,7 @@ public class TestLoadService {
 
 		DeleteLoadResponse response = new DeleteLoadResponse(CommonConstants.AccountNotFoundError);
 
-		DeleteLoadResponse result = loadservice.deleteLoad("load:862064c2-f58c-4758-986c-095cd6c2091b");
+		DeleteLoadResponse result = loadservice.deleteLoad("loadd:862064c2-f58c-4758-986c-095cd6c2091");
 
 		assertEquals(response, result);
 	}

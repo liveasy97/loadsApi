@@ -885,6 +885,35 @@ public class ApiTestRestAssured {
 		assertEquals("PER_TRUCK", responseupdate.jsonPath().getString("unitValue"));
 	}
 	
+	@Test
+	@Order(35)
+	public void updateDatafail() throws Exception {
+
+		String loadid = "load1:0a5f1700-041a-43d4-b3eb-00000000123";
+		
+		//update request
+		LoadRequest loadrequestupdate = new LoadRequest("Surat", "Surat", "Gujarat", "id:4", "Patna", "Patna",
+				"Bihar", "Silver", "OPEN_HALF_BODY", "60", "1000kg", "01/05/20", 
+				"added comment", "Done", (long)1000, LoadRequest.UnitValue.PER_TON);
+
+		String inputJsonupdate = mapToJson(loadrequestupdate);
+
+		Response responseupdate = RestAssured.given().header("", "").body(inputJsonupdate).header("accept", "application/json")
+				.header("Content-Type", "application/json").put("/" + loadid).then().extract().response();
+
+		assertEquals(200, responseupdate.statusCode());
+		assertEquals(CommonConstants.AccountNotFoundError, responseupdate.jsonPath().getString("status"));
+	}
+	
+	@Test
+	@Order(36)
+	public static void deleteDatafail() throws Exception{
+		
+		String loadid = "load1:0a5f1700-041a-43d4-b3eb-00000000123";
+		Response response1 = RestAssured.given().header("", "").delete("/" + loadid).then().extract().response();
+		assertEquals(200, response1.statusCode());
+		assertEquals(CommonConstants.AccountNotFoundError, response1.jsonPath().getString("status"));
+	}
 	
 	@Test
 	@AfterAll

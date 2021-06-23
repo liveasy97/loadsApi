@@ -304,7 +304,6 @@ public class LoadServiceImpl implements LoadService {
 
 	@Override
 	public UpdateLoadResponse updateLoad(String loadId, LoadRequest updateLoad) {
-		System.err.println("ye call hua hai");
 		UpdateLoadResponse updateloadResponse = new UpdateLoadResponse();
 		Load load = new Load();
 		

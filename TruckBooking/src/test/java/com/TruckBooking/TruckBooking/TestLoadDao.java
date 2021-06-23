@@ -36,8 +36,7 @@ public class TestLoadDao {
 		Load load = createLoad();
 		Load savedindb = entityManager.persist(load);
 		Load getfromdb = loadDao.findByLoadId(savedindb.getLoadId()).get();
-		System.err.println("a: " + savedindb);
-		System.err.println("b: " + getfromdb);
+
 		assertThat(getfromdb).isEqualTo(savedindb);
 	}
 	
@@ -54,11 +53,9 @@ public class TestLoadDao {
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
-			System.err.println("ele: " + t);
 			list.add(t);
 		}
-		System.err.println("a: " + loads);
-		System.err.println("b: " + list);
+
 		assertThat(list.size()).isEqualTo(2);
 	}
 	
@@ -77,11 +74,9 @@ public class TestLoadDao {
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
-			System.err.println("ele l,ul: " + t);
 			list.add(t);
 		}
-		System.err.println("a: " + loads);
-		System.err.println("b: " + list);
+
 		assertThat(list.size()).isEqualTo(3);
 		
 	}
@@ -101,11 +96,8 @@ public class TestLoadDao {
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
-			System.err.println("ele tt: " + t);
 			list.add(t);
 		}
-		System.err.println("a: " + loads);
-		System.err.println("b: " + list);
 		assertThat(list.size()).isEqualTo(2);
 	}
 	
@@ -118,9 +110,7 @@ public class TestLoadDao {
 		Load savedindb3 = entityManager.persist(loads.get(2));
 		
 		Optional<Load> load = loadDao.findByLoadId("loadid:2");
-		
-		System.err.println("a: " + loads);
-		System.err.println("b: " + loads.get(1));
+
 		assertThat(loads.get(1)).isEqualTo(load.get());
 	}
 	
@@ -139,11 +129,9 @@ public class TestLoadDao {
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
-			System.err.println("ele dt: " + t);
 			list.add(t);
 		}
-		System.err.println("a: " + loads);
-		System.err.println("b: " + list);
+
 		assertThat(list.size()).isEqualTo(1);
 	}
 	
@@ -163,11 +151,9 @@ public class TestLoadDao {
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
-			System.err.println("ele lp: " + t);
 			list.add(t);
 		}
-		System.err.println("a: " + loads);
-		System.err.println("b: " + list);
+
 		assertThat(list.size()).isEqualTo(3);
 	}
 	
@@ -187,11 +173,8 @@ public class TestLoadDao {
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
-			System.err.println("ele lpst: " + t);
 			list.add(t);
 		}
-		System.err.println("a: " + loads);
-		System.err.println("b: " + list);
 		assertThat(list.size()).isEqualTo(3);
 	}
 	
@@ -211,11 +194,8 @@ public class TestLoadDao {
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
-			System.err.println("ele lpst: " + t);
 			list.add(t);
 		}
-		System.err.println("a: " + loads);
-		System.err.println("b: " + list);
 		assertThat(list.size()).isEqualTo(3);
 	}
 	
@@ -235,11 +215,8 @@ public class TestLoadDao {
 		List<Load> list = new ArrayList<>();
 
 		for (Load t : allLoads) {
-			System.err.println("ele lpst: " + t);
 			list.add(t);
 		}
-		System.err.println("a: " + loads);
-		System.err.println("b: " + list);
 		assertThat(list.size()).isEqualTo(3);
 	}
 	
@@ -258,8 +235,6 @@ public class TestLoadDao {
 		entityManager.persist(getFromDb);
 		
 		Load getFromDb1 = loadDao.findByLoadId("loadid:1").get();
-		System.err.println("a: " + getFromDb.getWeight());
-		System.err.println("b: " + getFromDb1.getWeight());
 		assertThat(getFromDb1.getWeight()).isEqualTo(getFromDb.getWeight());
 	}
 

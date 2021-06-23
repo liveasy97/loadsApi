@@ -79,17 +79,10 @@ public class TestLoadController {
 		MockHttpServletResponse response = result.getResponse();
 
 		String outputInJson = response.getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++1addLoad");
-		System.err.println("i " + inputJson);
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertThat(outputInJson).isEqualTo(expectedJson);
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
-	
 	
 	// sending loadid using url
 	@Test
@@ -107,12 +100,6 @@ public class TestLoadController {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = mapToJson(loads.get(0));
 		String outputInJson = result.getResponse().getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++2getLoadbyloadid");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertEquals(expectedJson, outputInJson);
 		
@@ -140,12 +127,6 @@ public class TestLoadController {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = mapToJson(loads);
 		String outputInJson = result.getResponse().getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++2getLoadbyloadingpointcity");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertEquals(expectedJson, outputInJson);
 		
@@ -174,12 +155,6 @@ public class TestLoadController {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = mapToJson(loads.subList(1, 5));
 		String outputInJson = result.getResponse().getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++2getLoadbyloadingpointcity");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertEquals(expectedJson, outputInJson);
 		
@@ -205,12 +180,6 @@ public class TestLoadController {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = mapToJson(loads);
 		String outputInJson = result.getResponse().getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++2getLoadbyloadingpointcity");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertEquals(expectedJson, outputInJson);
 		
@@ -235,12 +204,6 @@ public class TestLoadController {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = mapToJson(loads.subList(3, 4));
 		String outputInJson = result.getResponse().getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++getLoadbypostloadid");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertEquals(expectedJson, outputInJson);
 		
@@ -267,12 +230,6 @@ public class TestLoadController {
 		String expectedJson = mapToJson(loads.subList(2, 3));
 		String outputInJson = result.getResponse().getContentAsString();
 		
-		System.err.println("++++++++++++++++++++++++++++++++++++getLoadbypostloadid");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
-
 		assertEquals(expectedJson, outputInJson);
 		
 		MockHttpServletResponse response1 = result.getResponse();
@@ -296,12 +253,6 @@ public class TestLoadController {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = mapToJson(loads.subList(2, 5));
 		String outputInJson = result.getResponse().getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++getLoadbypostloadid");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertEquals(expectedJson, outputInJson);
 		
@@ -327,12 +278,6 @@ public class TestLoadController {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = mapToJson(loadsret);
 		String outputInJson = result.getResponse().getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++3getLoad");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result);
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertEquals(expectedJson, outputInJson);
 		
@@ -340,9 +285,7 @@ public class TestLoadController {
 		assertEquals(HttpStatus.OK.value(), response1.getStatus());
 	}
 	
-	
 	//get with paramaters
-	
 	@Test
 	@Order(10)
 	public void updateLoad() throws Exception {
@@ -359,12 +302,6 @@ public class TestLoadController {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = mapToJson(response);
 		String outputInJson = result.getResponse().getContentAsString();
-		
-		System.err.println("++++++++++++++++++++++++++++++++++++4");
-		System.err.println("e " + expectedJson);
-		System.err.println("o " + outputInJson);
-		System.err.println("i " + result.getResponse());
-		System.err.println("++++++++++++++++++++++++++++++++++++");
 
 		assertEquals(expectedJson, outputInJson);
 		

@@ -468,7 +468,7 @@ public class TestLoadService {
 	@Test
 	@Order(27)
 	public void updateLoadfailed() {
-		when(loaddao.findByLoadId("load:862064c2-f58c-4758-986c-000000000000")).thenReturn(Optional.of(createLoads().get(0)));
+		when(loaddao.findByLoadId("load:862064c2-f58c-4758-986c-095cd6c2091")).thenReturn(Optional.empty());
 		LoadRequest loadrequest = new LoadRequest("Nagpur", "Nagpur", "Maharashtra", "id:1", "Raipur", "Raipur",
 				"Chhattisgarh", "Gold", "OPEN_HALF_BODY", "6", "10000kg", "01/05/21", "added comment", "pending",
 				(long) 100, LoadRequest.UnitValue.PER_TON);
@@ -483,7 +483,7 @@ public class TestLoadService {
 	@Test
 	@Order(28)
 	public void deleteLoadFail() {
-		when(loaddao.findByLoadId("load:862064c2-f58c-4758-986c-000000000000")).thenReturn(Optional.of(createLoads().get(0)));
+		when(loaddao.findByLoadId("load:862064c2-f58c-4758-986c-095cd6c2091")).thenReturn(Optional.empty());
 
 		DeleteLoadResponse response = new DeleteLoadResponse(CommonConstants.AccountNotFoundError);
 

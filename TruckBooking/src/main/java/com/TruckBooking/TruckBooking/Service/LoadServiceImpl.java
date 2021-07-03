@@ -23,168 +23,84 @@ public class LoadServiceImpl implements LoadService {
 	@Autowired
 	LoadDao loadDao;
 	
-	String temp="";
 	@Override
 	public CreateLoadResponse addLoad(LoadRequest addLoad) {
 		// TODO Auto-generated method stub
 		CreateLoadResponse createloadResponse = new CreateLoadResponse();
 		Load load = new Load();
+		
+		createloadResponse = checkField(addLoad.getLoadingPoint(), CommonConstants.loadingError, CommonConstants.emptyloadingpoint, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
+			return createloadResponse;
+		}
+		
+		createloadResponse = checkField(addLoad.getLoadingPointCity(), CommonConstants.loadingCityError, CommonConstants.emptyloadingcity, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
+			return createloadResponse;
+		}
+		
+		createloadResponse = checkField(addLoad.getLoadingPointState(), CommonConstants.loadingStateError, CommonConstants.emptyloadingstate, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
+			return createloadResponse;
+		}
+		
+		createloadResponse = checkField(addLoad.getUnloadingPoint(), CommonConstants.unloadingError, CommonConstants.emptyunloadingpoint, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
+			return createloadResponse;
+		}
 
-		if(addLoad.getLoadingPoint()==null) {
-			createloadResponse.setStatus(CommonConstants.loadingError);
+		createloadResponse = checkField(addLoad.getUnloadingPointCity(), CommonConstants.unloadingCityError, CommonConstants.emptyunloadingcity, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
 			return createloadResponse;
 		}
-		else {
-			temp=addLoad.getLoadingPoint().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptyloadingpoint);
-				return createloadResponse;
-			}
-			load.setLoadingPoint(temp);
+				
+		createloadResponse = checkField(addLoad.getUnloadingPointState(), CommonConstants.unloadingStateError, CommonConstants.emptyunloadingstate, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
+			return createloadResponse;
+		}
+				
+		createloadResponse = checkField(addLoad.getNoOfTrucks(), CommonConstants.noOfTrucksError, CommonConstants.emptytruckno, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
+			return createloadResponse;
 		}
 		
-		if(addLoad.getLoadingPointCity()==null) {
-			createloadResponse.setStatus(CommonConstants.loadingCityError);
+		createloadResponse = checkField(addLoad.getTruckType(), CommonConstants.truckTypeError, CommonConstants.emptytrucktype, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
 			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getLoadingPointCity().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptyloadingcity);
-				return createloadResponse;
-			}
-			load.setLoadingPointCity(temp);
 		}
 		
-		if(addLoad.getLoadingPointState()==null) {
-			createloadResponse.setStatus(CommonConstants.loadingStateError);
+		createloadResponse = checkField(addLoad.getProductType(), CommonConstants.productTypeError, CommonConstants.emptyproducttype, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
 			return createloadResponse;
 		}
-		else {
-			temp=addLoad.getLoadingPointState().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptyloadingstate);
-				return createloadResponse;
-			}
-			load.setLoadingPointState(temp);
+
+		createloadResponse = checkField(addLoad.getWeight(), CommonConstants.weightError, CommonConstants.emptyweight, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
+			return createloadResponse;
 		}
 		
-		if(addLoad.getUnloadingPoint()==null) {
-			createloadResponse.setStatus(CommonConstants.unloadingError);
+		createloadResponse = checkField(addLoad.getPostLoadId(), CommonConstants.idError, CommonConstants.emptypostloadid, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
 			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getUnloadingPoint().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptyunloadingpoint);
-				return createloadResponse;
-			}
-			load.setUnloadingPoint(temp);
 		}
 		
-		if(addLoad.getUnloadingPointCity()==null) {
-			createloadResponse.setStatus(CommonConstants.unloadingCityError);
+		createloadResponse = checkField(addLoad.getLoadDate(), CommonConstants.dateError, CommonConstants.emptydate, createloadResponse);
+		if(createloadResponse.getStatus()!=null) {
 			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getUnloadingPointCity().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptyunloadingcity);
-				return createloadResponse;
-			}
-			load.setUnloadingPointCity(temp);
 		}
 		
-		if(addLoad.getUnloadingPointState()==null) {
-			createloadResponse.setStatus(CommonConstants.unloadingStateError);
-			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getUnloadingPointState().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptyunloadingstate);
-				return createloadResponse;
-			}
-			load.setUnloadingPointState(temp);
-		}
-		
-		if(addLoad.getNoOfTrucks()==null) {
-			createloadResponse.setStatus(CommonConstants.noOfTrucksError);
-			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getNoOfTrucks().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptytruckno);
-				return createloadResponse;
-			}
-			load.setNoOfTrucks(temp);
-		}
-		
-		if(addLoad.getTruckType()==null) {
-			createloadResponse.setStatus(CommonConstants.truckTypeError);
-			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getTruckType().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptytrucktype);
-				return createloadResponse;
-			}
-			load.setTruckType(temp);
-		}
-		
-		if(addLoad.getProductType()==null) {
-			createloadResponse.setStatus(CommonConstants.productTypeError);
-			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getProductType().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptyproducttype);
-				return createloadResponse;
-			}
-			load.setProductType(temp);
-		}
-		
-		if(addLoad.getWeight()==null) {
-			createloadResponse.setStatus(CommonConstants.weightError);
-			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getWeight().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptyweight);
-				return createloadResponse;
-			}
-			load.setWeight(temp);
-		}
-		
-		if(addLoad.getPostLoadId()==null) {
-			createloadResponse.setStatus(CommonConstants.idError);
-			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getPostLoadId().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptypostloadid);
-				return createloadResponse;
-			}
-			load.setPostLoadId(temp);
-		}
-		
-		if(addLoad.getLoadDate()==null) {
-			createloadResponse.setStatus(CommonConstants.dateError);
-			return createloadResponse;
-		}
-		else {
-			temp=addLoad.getLoadDate().trim();
-			if(temp.length() < 1) {
-				createloadResponse.setStatus(CommonConstants.emptydate);
-				return createloadResponse;
-			}
-			load.setLoadDate(temp);
-		}
+		load.setLoadingPoint(addLoad.getLoadingPoint().trim());
+		load.setLoadingPointCity(addLoad.getLoadingPointCity().trim());
+		load.setLoadingPointState(addLoad.getLoadingPointState().trim());
+		load.setUnloadingPoint(addLoad.getUnloadingPoint().trim());
+		load.setUnloadingPointCity(addLoad.getUnloadingPointCity().trim());
+		load.setUnloadingPointState(addLoad.getUnloadingPointState().trim());
+		load.setNoOfTrucks(addLoad.getNoOfTrucks().trim());
+		load.setTruckType(addLoad.getTruckType().trim());
+		load.setProductType(addLoad.getProductType().trim());
+		load.setWeight(addLoad.getWeight().trim());
+		load.setPostLoadId(addLoad.getPostLoadId().trim());
+		load.setLoadDate(addLoad.getLoadDate().trim());
 		
 		if(addLoad.getRate() != null)
 		{
@@ -241,6 +157,19 @@ public class LoadServiceImpl implements LoadService {
 			}
 		}
 		
+		return createloadResponse;
+	}
+	
+	private CreateLoadResponse checkField(String value, String errorMsg, String emptyErrorMsg, CreateLoadResponse createloadResponse) {
+		
+		if(value==null) {
+			createloadResponse.setStatus(errorMsg);
+		}
+		else {
+			if(value.trim().length() < 1) {
+				createloadResponse.setStatus(emptyErrorMsg);
+			}
+		}
 		return createloadResponse;
 	}
 	
@@ -320,118 +249,84 @@ public class LoadServiceImpl implements LoadService {
 		if(L.isPresent()) {
 			load = L.get();
 			
-			if(updateLoad.getLoadingPoint() != null) {
-				temp=updateLoad.getLoadingPoint().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptyloadingpoint);
-					return updateloadResponse;
-				}
-				load.setLoadingPoint(temp);
+			updateloadResponse = checkField(updateLoad.getLoadingPoint(), CommonConstants.emptyloadingpoint, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
-			if(updateLoad.getLoadingPointCity() != null) {
-				temp=updateLoad.getLoadingPointCity().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptyloadingcity);
-					return updateloadResponse;
-				}
-				load.setLoadingPointCity(temp);
-			}
-			if(updateLoad.getLoadingPointState() != null) {
-				temp=updateLoad.getLoadingPointState().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptyloadingstate);
-					return updateloadResponse;
-				}
-				load.setLoadingPointState(temp);
+
+			updateloadResponse = checkField(updateLoad.getLoadingPointCity(), CommonConstants.emptyloadingcity, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
 			
-			if(updateLoad.getUnloadingPoint()!= null) {
-				temp=updateLoad.getUnloadingPoint().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptyunloadingpoint);
-					return updateloadResponse;
-				}
-				load.setUnloadingPoint(temp);
-			}
-			if(updateLoad.getUnloadingPointCity() != null) {
-				temp=updateLoad.getUnloadingPointCity().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptyunloadingcity);
-					return updateloadResponse;
-				}
-				load.setUnloadingPointCity(temp);
-			}
-			if(updateLoad.getUnloadingPointState() != null) {
-				temp=updateLoad.getUnloadingPointState().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptyunloadingstate);
-					return updateloadResponse;
-				}
-				load.setUnloadingPointState(temp);
+			updateloadResponse = checkField(updateLoad.getLoadingPointState(), CommonConstants.emptyloadingstate, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
 			
-			if(updateLoad.getNoOfTrucks() != null) {
-				temp=updateLoad.getNoOfTrucks().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptytruckno);
-					return updateloadResponse;
-				}
-				load.setNoOfTrucks(temp);
+			updateloadResponse = checkField(updateLoad.getUnloadingPoint(), CommonConstants.emptyunloadingpoint, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
 			
-			if(updateLoad.getTruckType() != null) {
-				temp=updateLoad.getTruckType().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptytrucktype);
-					return updateloadResponse;
-				}
-				load.setTruckType(temp);
+			updateloadResponse = checkField(updateLoad.getUnloadingPointCity(), CommonConstants.emptyunloadingcity, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
 			
-			if(updateLoad.getProductType() != null) {
-				temp=updateLoad.getProductType().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptyproducttype);
-					return updateloadResponse;
-				}
-				load.setProductType(temp);
+			updateloadResponse = checkField(updateLoad.getUnloadingPointState(), CommonConstants.emptyunloadingstate, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
 			
-			if(updateLoad.getWeight() != null) {
-				temp=updateLoad.getWeight().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptyweight);
-					return updateloadResponse;
-				}
-				load.setWeight(temp);
+			updateloadResponse = checkField(updateLoad.getNoOfTrucks(), CommonConstants.emptytruckno, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
 			
-			if(updateLoad.getLoadDate() != null) {
-				temp=updateLoad.getLoadDate().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptydate);
-					return updateloadResponse;
-				}
-				load.setLoadDate(temp);
+			updateloadResponse = checkField(updateLoad.getTruckType(), CommonConstants.emptytrucktype, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
 			
-			if(updateLoad.getPostLoadId() != null) {
-				temp=updateLoad.getPostLoadId().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus(CommonConstants.emptypostloadid);
-					return updateloadResponse;
-				}
-				load.setPostLoadId(temp);
+			updateloadResponse = checkField(updateLoad.getProductType(), CommonConstants.emptyproducttype, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
 			
-			if(updateLoad.getStatus() != null) {
-				temp=updateLoad.getStatus().trim();
-				if(temp.length() < 1) {
-					updateloadResponse.setStatus("Empty status");
-					return updateloadResponse;
-				}
-				load.setStatus(temp);
+			updateloadResponse = checkField(updateLoad.getWeight(), CommonConstants.emptyweight, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
 			}
+			
+			updateloadResponse = checkField(updateLoad.getLoadDate(), CommonConstants.emptydate, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
+			}
+			
+			updateloadResponse = checkField(updateLoad.getPostLoadId(), CommonConstants.emptypostloadid, updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
+			}
+			
+			updateloadResponse = checkField(updateLoad.getStatus(), "Empty status", updateloadResponse);
+			if(updateloadResponse.getStatus()!=null) {
+				return updateloadResponse;
+			}
+			
+			load.setLoadingPoint(updateLoad.getLoadingPoint()!=null ? updateLoad.getLoadingPoint().trim() : null);
+			load.setLoadingPointCity(updateLoad.getLoadingPointCity()!=null ? updateLoad.getLoadingPointCity().trim() : null);
+			load.setLoadingPointState(updateLoad.getLoadingPointState()!=null ? updateLoad.getLoadingPointState().trim() : null);
+			load.setUnloadingPoint(updateLoad.getUnloadingPoint()!=null ? updateLoad.getUnloadingPoint().trim() : null);
+			load.setUnloadingPointCity(updateLoad.getUnloadingPointCity()!=null ? updateLoad.getUnloadingPointCity().trim() : null);
+			load.setUnloadingPointState(updateLoad.getUnloadingPointState()!=null ? updateLoad.getUnloadingPointState().trim() : null);
+			load.setNoOfTrucks(updateLoad.getNoOfTrucks()!=null ? updateLoad.getNoOfTrucks().trim() : null);
+			load.setTruckType(updateLoad.getTruckType()!=null ? updateLoad.getTruckType().trim() : null);
+			load.setProductType(updateLoad.getProductType()!=null ? updateLoad.getProductType().trim() : null);
+			load.setWeight(updateLoad.getWeight()!=null ? updateLoad.getWeight().trim() : null);
+			load.setLoadDate(updateLoad.getLoadDate()!=null ? updateLoad.getLoadDate().trim() : null);
+			load.setPostLoadId(updateLoad.getPostLoadId()!=null ? updateLoad.getPostLoadId().trim() : null);
+			load.setStatus(updateLoad.getStatus()!=null ? updateLoad.getStatus().trim() : null);
 			
 			if(updateLoad.getComment() != null)
 			{
@@ -497,6 +392,16 @@ public class LoadServiceImpl implements LoadService {
 		}
 	}
 
+	private UpdateLoadResponse checkField(String value, String errorMsg, UpdateLoadResponse updateloadResponse) {
+		if(value != null) {
+			if(value.trim().length() < 1) {
+				updateloadResponse.setStatus(errorMsg);
+				return updateloadResponse;
+			}
+		}
+		return updateloadResponse;
+	}
+	
 	@Override
 	public DeleteLoadResponse deleteLoad(String loadId) {
 		DeleteLoadResponse deleteloadResponse = new DeleteLoadResponse();

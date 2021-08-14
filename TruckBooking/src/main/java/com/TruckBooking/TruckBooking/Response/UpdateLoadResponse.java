@@ -2,12 +2,18 @@ package com.TruckBooking.TruckBooking.Response;
 
 import java.sql.Timestamp;
 
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import com.TruckBooking.TruckBooking.Entities.Load.Status;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 
 @Data
 public class UpdateLoadResponse {

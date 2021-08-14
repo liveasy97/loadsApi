@@ -14,7 +14,7 @@ import com.TruckBooking.TruckBooking.Entities.Load.Status;
 public interface LoadDao extends JpaRepository<Load, String> {
 
 //	@Query("select l from Load l")
-//	List<Load> findByAll(Pageable pageable);
+	//List<Load> findByAll(Pageable pageable);
 
 	List<Load> findByPostLoadIdAndStatus(String postLoadId, Status status, Pageable pageable);
 

@@ -1,13 +1,20 @@
 package com.TruckBooking.TruckBooking.Model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 
 import com.TruckBooking.TruckBooking.Entities.Load.Status;
+import com.TruckBooking.TruckBooking.Entities.Load.UnitValue;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class LoadRequest {
 

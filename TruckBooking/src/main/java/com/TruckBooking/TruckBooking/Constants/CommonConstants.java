@@ -41,7 +41,7 @@ public class CommonConstants {
 	public static String LOADID_URI = "/load/loadid:1";
 	public static String ID = "id:1";
 	public static String LOADID = "loadid:1";
-	public static String BASEURI = "http://localhost:8081/load";
+	public static String BASEURI = "http://localhost:8080/load";
 	// public static String
 
 }

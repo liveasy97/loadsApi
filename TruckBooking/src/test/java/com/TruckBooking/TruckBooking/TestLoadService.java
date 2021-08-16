@@ -484,19 +484,7 @@ private static Validator validator;
 		assertEquals(loads, result);
 	}
 	
-	@Test
-	@Order(20)
-	public void getLoadsBytruckTypefail() {
-		Pageable currentPage;
-		currentPage = PageRequest.of(0, CommonConstants.pagesize, Sort.Direction.DESC, "timestamp");
-		List<Load> loads = createLoads().subList(0,3);
-		Throwable exception = assertThrows(
-				EntityNotFoundException.class, () -> {
-					loadservice.getLoads(0, null, null, null, "OPEN_HALF_BODY", null, false);
-			
-	            });
-		assertEquals("Load was not found for parameters {truckType=OPEN_HALF_BODY}", exception.getMessage());
-	}
+	
 
 	@Test
 	@Order(21)
@@ -513,48 +501,10 @@ private static Validator validator;
 		assertEquals(loads, result);
 	}
 	
-	@Test
-	@Order(21)
-	public void getLoadsBydatefail() {
-		Pageable currentPage;
-		currentPage = PageRequest.of(0, CommonConstants.pagesize, Sort.Direction.DESC, "timestamp");
-		List<Load> loads = createLoads().subList(0, 3);
-		
-		Throwable exception = assertThrows(
-				EntityNotFoundException.class, () -> {
-					loadservice.getLoads(0, null, null, null, null, "22/01/21", false);
-			
-	            });
-		assertEquals("Load was not found for parameters {loadDate=22/01/21}", exception.getMessage());
-	}
-
-	@Test
-	@Order(22)
-	public void getLoadsBypostLoadIdfail() {
-		Pageable currentPage;
-		currentPage = PageRequest.of(0, CommonConstants.pagesize, Sort.Direction.DESC, "timestamp");
-		List<Load> loads = createLoads().subList(0,1);
-		Throwable exception = assertThrows(
-				EntityNotFoundException.class, () -> {
-					loadservice.getLoads(0, null, null, "id:2", null, null, false);
-			
-	            });
-		assertEquals("Load was not found for parameters {postLoadId=id:2}", exception.getMessage());
-	}
 	
-	@Test
-	@Order(22)
-	public void getLoadsBypostLoadId() {
-		Pageable currentPage;
-		currentPage = PageRequest.of(0, CommonConstants.pagesize, Sort.Direction.DESC, "timestamp");
-		List<Load> loads = createLoads().subList(0,1);
-		when(loaddao.findByPostLoadIdAndStatus("id:1",Load.Status.PENDING, currentPage)).thenReturn(loads);
-		Collections.reverse(loads);
-		List<Load> result = loadservice.getLoads(0, null, null, "id:1", null, null, false);
-		
-		
-		assertEquals(loads, result);
-	}
+	
+	
+	
 
 
 	@Test
@@ -569,21 +519,7 @@ private static Validator validator;
 		assertEquals(loads, result);
 	}
 	
-	@Test
-	@Order(23)
-	public void getLoadsByloadingPointCityFail() {
-		Pageable currentPage;
-		currentPage = PageRequest.of(0, CommonConstants.pagesize, Sort.Direction.DESC, "timestamp");
-		List<Load> loads = createLoads();
-
-		Throwable exception = assertThrows(
-				EntityNotFoundException.class, () -> {
-					loadservice.getLoads(0, "Nagpur", null, null, null, null, false);
-			
-	            });
-		assertEquals("Load was not found for parameters {loadingPointCity=Nagpur}", exception.getMessage());
-				
-	}
+	
 	
 	
 	
@@ -603,19 +539,7 @@ private static Validator validator;
 		assertEquals(loads, result);
 	} 
 	
-	@Test
-	@Order(24)
-	public void getLoadsByunloadingPointCityfail() {
-		Pageable currentPage;
-		currentPage = PageRequest.of(0, CommonConstants.pagesize, Sort.Direction.DESC, "timestamp");
-		List<Load> loads = createLoads();
-		Throwable exception = assertThrows(
-				EntityNotFoundException.class, () -> {
-					loadservice.getLoads(0, null, "Raipur", null, null, null, false);
-			
-	            });
-		assertEquals("Load was not found for parameters {unloadingPointCity=Raipur}", exception.getMessage());
-	}
+	
 	
 
 	// unable to search using only unloading point, loading point is also necessary

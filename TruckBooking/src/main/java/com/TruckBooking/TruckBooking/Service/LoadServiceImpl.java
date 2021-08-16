@@ -154,8 +154,7 @@ public class LoadServiceImpl implements LoadService {
 			}
 			List<Load> load = loadDao.findByLoadingPointCityAndStatus(loadingPointCity,Load.Status.PENDING, currentPage);
 			
-			if (load.isEmpty())
-				throw new EntityNotFoundException(Load.class, "loadingPointCity", loadingPointCity.toString());
+			
 			// Collections.reverse(load);
 			return load;
 		}
@@ -163,8 +162,6 @@ public class LoadServiceImpl implements LoadService {
 		if (unloadingPointCity != null) {
 			List<Load> load = loadDao.findByUnloadingPointCityAndStatus(unloadingPointCity,Load.Status.PENDING, currentPage);
 			
-			if (load.isEmpty())
-				throw new EntityNotFoundException(Load.class, "unloadingPointCity", unloadingPointCity.toString());
 			// Collections.reverse(load);
 			return load;
 			
@@ -172,9 +169,6 @@ public class LoadServiceImpl implements LoadService {
 
 		if (postLoadId != null) {
 			List<Load> load = loadDao.findByPostLoadIdAndStatus(postLoadId, Load.Status.PENDING,currentPage);
-			
-			if (load.isEmpty())
-				throw new EntityNotFoundException(Load.class, "postLoadId", postLoadId.toString());
 			// Collections.reverse(load);
 			return load;
 		}
@@ -182,8 +176,6 @@ public class LoadServiceImpl implements LoadService {
 		if (truckType != null) {
 			List<Load> load = loadDao.findByTruckTypeAndStatus(truckType, Load.Status.PENDING,currentPage);
 			
-			if (load.isEmpty())
-				throw new EntityNotFoundException(Load.class, "truckType", truckType.toString());
 			// Collections.reverse(load);
 			return load;
 		}
@@ -191,8 +183,6 @@ public class LoadServiceImpl implements LoadService {
 		if (loadDate != null) {
 			List<Load> load = loadDao.findByLoadDateAndStatus(loadDate,Load.Status.PENDING, currentPage);
 			
-			if (load.isEmpty())
-				throw new EntityNotFoundException(Load.class, "loadDate", loadDate.toString());
 			// Collections.reverse(load);
 			return load;
 		}

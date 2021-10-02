@@ -4,7 +4,11 @@ package com.TruckBooking.Booking.Service;
 
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.hibernate.exception.DataException;
@@ -20,6 +24,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
+import com.TruckBooking.Booking.Model.Truck;
 import com.TruckBooking.Booking.Constants.BookingConstants;
 import com.TruckBooking.Booking.Dao.BookingDao;
 import com.TruckBooking.Booking.Entities.BookingData;
@@ -30,17 +35,39 @@ import com.TruckBooking.Booking.Model.BookingPostRequest;
 import com.TruckBooking.Booking.Model.BookingPostResponse;
 import com.TruckBooking.Booking.Model.BookingPutRequest;
 import com.TruckBooking.Booking.Model.BookingPutResponse;
+import com.TruckBooking.Booking.Model.ResponseTesting;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
+import com.TruckBooking.Booking.Entities.Driver; 
+import com.TruckBooking.TruckBooking.Entities.Load;
+import com.TruckBooking.Booking.Entities.Transporter;
+import com.TruckBooking.Booking.Entities.TruckData;
+import com.TruckBooking.TruckBooking.Dao.LoadDao;
+import com.TruckBooking.Booking.Dao.DriverRepository;
+import com.TruckBooking.Booking.Dao.TransporterDao;
+import com.TruckBooking.Booking.Dao.TruckDao;
 
 @Service
 @Slf4j
 public class BookingServiceImpl implements BookingService {
 	@Autowired
 	private BookingDao bookingDao;
+	
+	@Autowired
+	private LoadDao loadDao;
+	
+	@Autowired
+	private DriverRepository driverDao;
+	
+	@Autowired
+	private TransporterDao transporterDao;
+	
+	@Autowired
+	private TruckDao truckDao;
+	
 
 	private BookingConstants constants;
 
@@ -421,5 +448,110 @@ public class BookingServiceImpl implements BookingService {
 			log.error("Exception: update load status failed");
 			throw e;
 		}
+	}
+
+
+	@Override
+	public List<ResponseTesting> getDataTesting(Integer pageNo, Boolean cancel, Boolean completed, String transporterId,
+			String postLoadId) {
+		List<ResponseTesting> ls = new ArrayList<>();		
+		List<BookingData> bookingDataList = null;
+		if (pageNo == null) {
+			pageNo = 0;
+		}
+		Pageable page = PageRequest.of(pageNo, BookingConstants.pageSize,Sort.Direction.DESC,"timestamp");	
+		
+		//from Booking table//
+		if (transporterId != null && postLoadId == null) {		
+			 bookingDataList = bookingDao.findByTransporterIdAndCancelAndCompletedWithJoinFetchTruckIds(transporterId, cancel, completed, page);
+			 log.info("bookingData call");
+		} 
+		if (postLoadId != null && transporterId == null) {		
+			bookingDataList = bookingDao.findByTransporterIdAndCancelAndCompletedWithJoinFetchTruckIds(transporterId, cancel, completed, page);
+			log.info("bookingData call");
+		}	
+		if (cancel != null && completed != null && transporterId == null && postLoadId == null) {		
+			bookingDataList = bookingDao.findByCancelAndCompleted(cancel, completed, page);	
+			log.info("bookingData call");
+		}		
+		if (bookingDataList == null || bookingDataList.isEmpty()) return null;
+
+		for (BookingData bookingData : bookingDataList) 
+		{
+			ResponseTesting responseTesting = new ResponseTesting();		
+		
+			responseTesting.setBookingId(bookingData.getBookingId());
+			responseTesting.setTransporterId(bookingData.getTransporterId());
+			responseTesting.setPostLoadId(bookingData.getPostLoadId());
+			responseTesting.setRate(bookingData.getRate());
+			responseTesting.setUnitValue(bookingData.getUnitValue());
+			responseTesting.setTruckId(bookingData.getTruckId());
+			responseTesting.setCancel(bookingData.getCancel());
+			responseTesting.setCompleted(bookingData.getCompleted());
+			responseTesting.setBookingDate(bookingData.getBookingDate());
+			responseTesting.setCompletedDate(bookingData.getCompletedDate());
+		
+		    String loadId = bookingData.getLoadId();
+		    
+		    // Get load from load table
+		    log.info("Fetching load: "+loadId);
+		    Optional<Load> load = loadDao.findByLoadId(loadId);
+		    
+		    if (load.isPresent()) {
+		    	responseTesting.setLoadId(load.get().getLoadId());
+		    	responseTesting.setLoadingPointCity(load.get().getLoadingPointCity());
+		    	responseTesting.setUnloadingPointCity(load.get().getUnloadingPointCity());		    	
+		    }
+		    
+		    // Get transporter name from transporter table
+		    log.info("Fetching transporter: "+bookingData.getTransporterId());
+		    Optional<Transporter> transporter = transporterDao.findById(bookingData.getTransporterId());
+		    if (transporter.isPresent()) {
+		    	responseTesting.setTransporterName(transporter.get().getTransporterName());		    	
+		    }
+		    
+		    List<String> truckIds = bookingData.getTruckId();	    
+		    // Get truck details from truck table
+		    if(truckIds != null)
+		    {
+		    	log.info("Get all truck data with truckIds: "+ String.join(", ", truckIds));
+		    	List<TruckData> truckDataList = truckDao.findAllById(truckIds);
+		    	
+		    	if (truckDataList != null) {    	
+		    		List<Truck> trucks = new ArrayList<>();
+		    		List<String> driverIds = new ArrayList<>();
+		    		
+		    		truckDataList.forEach(truckdata -> driverIds.add(truckdata.getDriverId()));
+		    		
+		    		log.info("Fetching drivers with driverIds: "+ String.join(", ", driverIds));
+		    		List<Driver> driverDataList  = driverDao.findAllById(driverIds);
+
+		    		Map<String, Driver> driverMap = new HashMap<>();
+		    		if (driverDataList != null) {
+		    			log.info("Received driver count for load id :"+loadId+" : "+driverDataList.size());
+		    			driverDataList.forEach(driver -> driverMap.put(driver.getDriverId(), driver));
+		    		}
+		    		
+		    		for(TruckData truckdata : truckDataList)
+		    		{
+		    			Truck truck = new Truck();
+		    			truck.setTruckNo(truckdata.getTruckNo());
+		    			truck.setTruckApproved(truckdata.getTruckApproved());
+		    			truck.setImei(truckdata.getImei());	
+		    			
+		    			// Get driver details from driver map
+		    			Driver driver = driverMap.get(truckdata.getDriverId());
+		    			if (driver != null) {
+		    				truck.setDriverName(driver.getDriverName());
+		    				truck.setDriverPhoneNumber(driver.getPhoneNum());
+		    			}
+		    			trucks.add(truck);
+		    		}
+		    		responseTesting.setTrucks(trucks);
+		    	}
+		    }
+		    ls.add(responseTesting);
+		}		
+		return ls;
 	}
 }

@@ -3,6 +3,7 @@ package com.TruckBooking.Booking.Service;
 import java.net.ConnectException;
 import java.util.List;
 
+import com.TruckBooking.Booking.Model.ResponseTesting;
 import com.TruckBooking.Booking.Entities.BookingData;
 import com.TruckBooking.Booking.Model.BookingDeleteResponse;
 import com.TruckBooking.Booking.Model.BookingPostRequest;
@@ -24,5 +25,7 @@ public interface BookingService {
 	BookingDeleteResponse deleteBooking(String bookingId);
 	
 	void updating_load_status_by_loadid(String loadid, String inputJson) throws ConnectException, Exception;
+	
+	List<ResponseTesting> getDataTesting(Integer pageNo, Boolean cancel, Boolean completed, String transporterId,String postLoadId);
 
 }

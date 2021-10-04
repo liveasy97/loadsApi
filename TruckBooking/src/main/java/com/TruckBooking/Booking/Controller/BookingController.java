@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.TruckBooking.Booking.Model.ResponseTesting;
 import com.TruckBooking.Booking.Constants.BookingConstants;
 import com.TruckBooking.Booking.Entities.BookingData;
 import com.TruckBooking.Booking.Exception.EntityNotFoundException;
@@ -73,6 +74,17 @@ public class BookingController {
 		log.info("Get with Params Controller Started");
 		return new ResponseEntity<>(bookingService.getDataById(pageNo, cancel, completed, transporterId, postLoadId),
 				HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/bookingtesting")
+	public ResponseEntity<List<ResponseTesting>> getDataTestingC(@RequestParam(value = "pageNo", required = false) Integer pageNo,
+			@RequestParam(value = "cancel", required = false) Boolean cancel,
+			@RequestParam(value = "completed", required = false) Boolean completed,
+			@RequestParam(value = "transporterId", required = false) String transporterId,
+			@RequestParam(value = "postLoadId", required = false) String postLoadId) throws EntityNotFoundException {
+		log.info("Get Controller Started");
+		return new ResponseEntity<>(bookingService.getDataTesting(pageNo,cancel, completed, transporterId,postLoadId), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/booking/{bookingId}")

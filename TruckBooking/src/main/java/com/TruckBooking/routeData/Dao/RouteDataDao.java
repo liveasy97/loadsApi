@@ -15,4 +15,5 @@ public interface RouteDataDao extends JpaRepository<Route, String> {
     List<Route> findByTruckId(String truckId);
     List<Route> findByTruckNo(String truckNo);
     List<Route> findByTransporterId(String transporterId);
+    List<Route> findByDeviceId(String deviceId);
 }

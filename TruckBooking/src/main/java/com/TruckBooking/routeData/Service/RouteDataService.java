@@ -13,6 +13,6 @@ public interface RouteDataService {
 
     public Route getRouteData(String routeDataId);
 
-    public List<Route> getRelevantRoutesData(String imei, String truckId, String truckNo, String transporterId);
+    public List<Route> getRelevantRoutesData(String imei, String truckId, String truckNo, String transporterId, String deviceId);
 
 }

@@ -41,12 +41,13 @@ public class RouteController {
             @RequestParam(name = "imei", required = false) String imei,
             @RequestParam(name = "truckId", required = false) String truckId,
             @RequestParam(name = "truckNo", required = false) String trucNo,
-            @RequestParam(name = "transporterId", required = false) String transporterId)
+            @RequestParam(name = "transporterId", required = false) String transporterId,
+            @RequestParam(name= "deviceId", required = false) String deviceId)
     {
         log.info("Get with Params Controller Started");
         return new ResponseEntity<>(
                         routeDataService
-                        .getRelevantRoutesData(imei, truckId, trucNo, transporterId), HttpStatus.OK);
+                        .getRelevantRoutesData(imei, truckId, trucNo, transporterId, deviceId), HttpStatus.OK);
     }
 
 

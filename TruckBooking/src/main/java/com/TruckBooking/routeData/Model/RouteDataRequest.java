@@ -27,6 +27,8 @@ public class RouteDataRequest {
     private String imei;
     private double latitude;
     private double longitude;
+    @NotBlank(message = "deviceId can't be left blank.")
+    private String deviceId;
     @Enumerated(EnumType.STRING)
     private StopageStatus stopageStatus;
     public enum StopageStatus {

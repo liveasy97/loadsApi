@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotBlank;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class CreateRouteDataResponse {
     public Timestamp timestamp;
     private double latitude;
     private double longitude;
+    private String deviceId;
     @Enumerated(EnumType.STRING)
     private StopageStatus stopageStatus;
     public enum StopageStatus {

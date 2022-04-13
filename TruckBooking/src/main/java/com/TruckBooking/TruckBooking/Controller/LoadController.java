@@ -25,16 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 public class LoadController {
-// this is
-
-
-
-
-
-
-
-
-	
+/// this is the new change of controller class
 	@Autowired
 	public LoadServiceImpl loadService;
 

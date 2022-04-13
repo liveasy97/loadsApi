@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d05c3d93-2aa8-47fe-9e80-5053eee78822" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TruckBooking/src/main/java/com/TruckBooking/TruckBooking/Controller/LoadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/TruckBooking/src/main/java/com/TruckBooking/TruckBooking/Controller/LoadController.java" afterDir="false" />
     </list>
@@ -41,7 +40,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1640253512004</updated>
-      <workItem from="1649862050937" duration="231000" />
+      <workItem from="1649862050937" duration="1126000" />
     </task>
     <servers />
   </component>

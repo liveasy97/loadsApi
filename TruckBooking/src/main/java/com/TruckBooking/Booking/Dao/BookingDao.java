@@ -26,5 +26,10 @@ public interface BookingDao extends JpaRepository<BookingData, String> {
 	
 	@Query("select b from BookingData b")
 	List<BookingData> getAll(Pageable p);
+	
+	@Query(value="SELECT b FROM BookingData b LEFT JOIN FETCH b.truckId WHERE b.transporterId = :transporterId and b.cancel = :cancel and b.completed = :completed" ,
+			countProjection = "b.bookingId")
+	List<BookingData> findByTransporterIdAndCancelAndCompletedWithJoinFetchTruckIds(String transporterId, Boolean cancel, Boolean completed,
+			Pageable p);
 
 }

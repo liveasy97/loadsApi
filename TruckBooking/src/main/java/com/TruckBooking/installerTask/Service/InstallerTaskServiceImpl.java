@@ -94,6 +94,10 @@ public class InstallerTaskServiceImpl implements InstallerTaskService {
                 response.setGpsInstallerId(temp.trim());
             }
 
+            installerTask.setInstallerTaskStatus(InstallerTask.InstallerTaskStatus.Pending);
+            response.setInstallerTaskStatus(InstallerTask.InstallerTaskStatus.Pending);
+
+
             installerTaskDao.save(installerTask);
             log.info("installer Task Data is saved to the database");
             log.info("addInstallerTask service response is returned");
@@ -118,7 +122,7 @@ public class InstallerTaskServiceImpl implements InstallerTaskService {
         }
 
         if(gpsInstallerId != null){
-            List<InstallerTask> installerTaskList = installerTaskDao.findByGpsInstallerId(gpsInstallerId);
+            List<InstallerTask> installerTaskList = installerTaskDao.findByGpsInstallerIdAndInstallerTaskStatus(gpsInstallerId, InstallerTask.InstallerTaskStatus.Pending);
 
             if(installerTaskList.isEmpty())
                 throw new EntityNotFoundException(InstallerTask.class, "GpsInstallerId", gpsInstallerId);
@@ -162,6 +166,7 @@ public class InstallerTaskServiceImpl implements InstallerTaskService {
 
             response.setInstallerTaskId(installerTask.getInstallerTaskId());
             response.setVehicleNo(installerTask.getVehicleNo());
+            response.setInstallerTaskStatus(installerTask.getInstallerTaskStatus());
 
             temp = installerTaskRequest.getVehicleOwnerName();
             if (StringUtils.isNotBlank(temp)) {
@@ -210,6 +215,25 @@ public class InstallerTaskServiceImpl implements InstallerTaskService {
             if (StringUtils.isNotBlank(temp)) {
                 installerTask.setGpsInstallerId(temp.trim());
                 response.setGpsInstallerId(temp.trim());
+            }
+            if(installerTaskRequest.getInstallerTaskStatus()!=null)
+            {
+                if(String.valueOf(installerTaskRequest.getInstallerTaskStatus()).equals("Pending"))
+                {
+                    installerTask.setInstallerTaskStatus(InstallerTask.InstallerTaskStatus.Pending);
+
+                }
+                else if (String.valueOf(installerTaskRequest.getInstallerTaskStatus()).equals("Assigned"))
+                { installerTask.setInstallerTaskStatus(InstallerTask.InstallerTaskStatus.Assigned); }
+
+                else if(String.valueOf(installerTaskRequest.getInstallerTaskStatus()).equals("Completed"))
+                {
+                    installerTask.setInstallerTaskStatus(InstallerTask.InstallerTaskStatus.Completed);
+                }
+                else
+                {
+                    throw  new BusinessException("Unknown Status");
+                }
             }
 
             installerTaskDao.save(installerTask);

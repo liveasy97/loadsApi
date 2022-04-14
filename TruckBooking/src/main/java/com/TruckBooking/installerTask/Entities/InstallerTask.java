@@ -3,9 +3,7 @@ package com.TruckBooking.installerTask.Entities;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 
@@ -39,5 +37,14 @@ public class InstallerTask {
     private String installationLocation;
 
     private String gpsInstallerId;
+
+    @Enumerated(EnumType.STRING)
+    public InstallerTaskStatus installerTaskStatus;
+
+    public enum InstallerTaskStatus
+    {
+        Assigned ,Pending, Completed
+    }
+
 
 }

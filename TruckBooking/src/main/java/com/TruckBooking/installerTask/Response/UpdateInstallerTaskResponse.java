@@ -1,6 +1,7 @@
 package com.TruckBooking.installerTask.Response;
 
 
+import com.TruckBooking.installerTask.Entities.InstallerTask;
 import lombok.Data;
 
 @Data
@@ -25,4 +26,6 @@ public class UpdateInstallerTaskResponse {
     private String installationLocation;
 
     private String gpsInstallerId;
+
+    public InstallerTask.InstallerTaskStatus installerTaskStatus;
 }
